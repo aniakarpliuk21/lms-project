@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+    restart: on-failure
+    command: npm run start:dev
+  db:
+    image: mongo
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./mongo_db:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  web:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/out:/usr/share/nginx/html
+    depends_on:
+      - app
