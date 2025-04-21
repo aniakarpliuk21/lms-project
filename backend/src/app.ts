@@ -1,23 +1,35 @@
-import dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import cors from "cors";
+import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 
-import { userRouter } from "./routers/user.router";
-
-dotenv.config({ path: "../.env" });
+import { configure } from "./configs/configure";
+import { createAdmin } from "./configs/create-admin";
+import { cronRunner } from "./crons";
+import { ApiError } from "./errors/api-error";
+import { authRouter } from "./routers/auth.router";
+import { studentRouter } from "./routers/student.router";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
+app.use("/api/students", studentRouter);
+app.use("/api/auth", authRouter);
+app.use(
+  "*",
+  (error: ApiError, req: Request, res: Response, next: NextFunction) => {
+    const status = error.status ?? 500;
+    const message = error.message ?? "Something went wrong";
+    res.status(status).json({ status, message });
+  },
+);
+process.on("uncaughtException", (error: ApiError) => {
+  console.error("Uncaught Exception", error);
+  process.exit(1);
 });
-app.use("/users", userRouter);
-const mongoUri = process.env.MONGO_URI;
-if (!mongoUri) {
-  throw new Error("MONGO_URI не задано в середовищі");
-}
+
+const mongoUri = configure.mongoUri;
 const connection = async () => {
   let dbCon = false;
   while (!dbCon) {
@@ -33,15 +45,16 @@ const connection = async () => {
     }
   }
 };
-const port = process.env.PORT;
 const start = async () => {
   try {
     await connection();
-    await app.listen(port, () => {
-      console.log(`Server has been started on port ${port}`);
+    await createAdmin();
+    await app.listen(configure.port, () => {
+      console.log(`Server has been started on port ${configure.port}`);
     });
+    await cronRunner();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 start();
