@@ -28,7 +28,7 @@ class StudentRepository {
         sortObj.name = query.order;
         break;
       case StudentListOrderEnum.ID:
-        sortObj.created_at = query.order;
+        sortObj._id = query.order;
         break;
       default:
         throw new ApiError("Invalid order by", 400);

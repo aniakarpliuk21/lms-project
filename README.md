@@ -1,0 +1,56 @@
+This is a full-stack Learning Management System (LMS) project consisting of:
+
+- **Frontend**: built with Next.js
+- **Backend**: built with Express.js and TypeScript
+- **Database**: MongoDB Atlas
+- **Containerized** with Docker & managed via Docker Compose
+- **Reverse Proxy** via Nginx
+
+__________
+
+Before running this project, make sure you have the following installed:
+
+- [Docker](https://www.docker.com/) & Docker Compose
+- A `.env` file in the project root (see `.env.example`)
+- A MongoDB Atlas cluster (or local MongoDB)
+
+___________
+
+How to Run the Project
+
+1. Clone the repository
+
+git clone https://github.com/aniakarpliuk21/lms-project.git
+cd lms-project
+2. Create .env File
+Copy the example file and fill in your environment variables:
+
+cp .env.example .env
+Edit .env and set values for:
+
+3. Start the App with Docker
+
+docker-compose up --build
+
+Set up Nginx as a reverse proxy
+
+________
+
+🧪 API Documentation
+The backend API supports Swagger or Postman 
+
+Swagger:
+http://localhost/api/docs
+
+Postman Collection:
+
+...
+
+_______
+To stop the services and remove containers:
+
+docker-compose down
+
+
+
+

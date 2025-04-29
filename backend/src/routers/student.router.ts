@@ -1,16 +1,27 @@
 import { Router } from "express";
 
 import { studentController } from "../controllers/student.controller";
+import { authMiddleware } from "../middlewares/auth.moddleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
+import { StudentValidator } from "../validators/student.validator";
 
 const router = Router();
-router.get("/", studentController.getStudentList);
+router.post(
+  "/",
+  authMiddleware.checkAccessToken,
+  commonMiddleware.validateBody(StudentValidator.createStudent),
+  studentController.createStudent,
+);
+router.get(
+  "/",
+  authMiddleware.checkAccessToken,
+  studentController.getStudentList,
+);
 router.get(
   "/:studentId",
   commonMiddleware.isValid("studentId"),
   studentController.getStudentById,
 );
-router.post("/", studentController.createStudent);
 router.put(
   "/:studentId",
   commonMiddleware.isValid("studentId"),

@@ -21,10 +21,6 @@ class StudentPresenter {
       alreadyPaid: entity.alreadyPaid,
       _managerId: entity._managerId,
       group: entity.group,
-      message: entity.message,
-      utm: entity.utm,
-      isDeleted: entity.isDeleted,
-      isVerified: entity.isVerified,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };

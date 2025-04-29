@@ -19,22 +19,22 @@ const studentSchema = new Schema(
     course: {
       enum: CourseEnum,
       type: String,
-      required: true,
+      default: null,
     },
     course_format: {
       enum: CourseFormatEnum,
       type: String,
-      required: true,
+      default: null,
     },
     course_type: {
       enum: CourseTypeEnum,
       type: String,
-      required: true,
+      default: null,
     },
     status: {
       enum: StudentStatusEnum,
       type: String,
-      required: true,
+      default: null,
     },
     sum: { type: Number },
     alreadyPaid: { type: Number, default: 0 },
@@ -44,10 +44,6 @@ const studentSchema = new Schema(
       default: null,
     },
     group: { type: String, default: null },
-    message: { type: String, default: "" },
-    utm: { type: String, default: "" },
-    isDeleted: { type: Boolean, default: false },
-    isVerified: { type: Boolean, default: false },
   },
   { timestamps: true, versionKey: false },
 );

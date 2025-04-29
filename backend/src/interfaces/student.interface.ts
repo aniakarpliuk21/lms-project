@@ -14,18 +14,14 @@ export interface IStudent {
   email: string;
   phone: string;
   age: number;
-  course: CourseEnum;
-  course_format: CourseFormatEnum;
-  course_type: CourseTypeEnum;
-  status: StudentStatusEnum;
-  sum: number;
-  alreadyPaid: number;
-  _managerId?: string;
+  course?: CourseEnum;
+  course_format?: CourseFormatEnum;
+  course_type?: CourseTypeEnum;
+  status?: StudentStatusEnum;
+  sum?: number;
+  alreadyPaid?: number;
+  _managerId?: string | null;
   group?: string;
-  message?: string;
-  utm?: string;
-  isDeleted: boolean;
-  isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -57,8 +53,6 @@ export type IStudentUpdateDto = Pick<
   | "alreadyPaid"
   | "_managerId"
   | "group"
-  | "message"
-  | "utm"
 >;
 
 export type IStudentListQuery = {
