@@ -68,7 +68,13 @@ const [isAuthState, setIsAuthState] = useState<boolean>(false);
                         {errors.password && <span>{errors.password.message}</span>}
                     </div>
                     {errorMessage && <p className="mb-4 text-red-500">{errorMessage}</p>}
-                            <button
+                    {isAuthState && (
+                        <p className="mb-4 text-green-600 font-semibold">
+                            Successfully authenticated!
+                        </p>
+                    )}
+
+                    <button
                                 className="w-full rounded-md bg-lime-600 p-2 text-white transition hover:bg-lime-600"
                                 disabled={!isValid}
                             >Login</button>

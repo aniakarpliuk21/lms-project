@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 
 import { configure } from "./configs/configure";
 import { createAdmin } from "./configs/create-admin";
+import { importStudents } from "./configs/import-students";
 import { cronRunner } from "./crons";
 import { ApiError } from "./errors/api-error";
 import { authRouter } from "./routers/auth.router";
@@ -49,6 +50,7 @@ const start = async () => {
   try {
     await connection();
     await createAdmin();
+    await importStudents();
     await app.listen(configure.port, () => {
       console.log(`Server has been started on port ${configure.port}`);
     });

@@ -19,5 +19,5 @@ export const configure = {
   actionEmailVerificationSecret: process.env.ACTION_EMAIL_VERIFICATION_SECRET,
   actionEmailVerificationExpiresIn:
     process.env.ACTION_EMAIL_VERIFICATION_EXPIRES_IN,
-  frontUrl: process.env.FRONT_URL || "http://localhost:3000",
+  frontUrl: process.env.FRONT_URL || "http://localhost",
 };

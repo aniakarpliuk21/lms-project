@@ -1,27 +1,23 @@
 import { OrderEnum } from "../enums/order.enum";
-import {
-  CourseEnum,
-  CourseFormatEnum,
-  CourseTypeEnum,
-  StudentStatusEnum,
-} from "../enums/student.enum";
 import { StudentListOrderEnum } from "../enums/student-list-order.enum";
 
 export interface IStudent {
   _id: string;
-  name: string;
-  surname: string;
-  email: string;
-  phone: string;
-  age: number;
-  course?: CourseEnum;
-  course_format?: CourseFormatEnum;
-  course_type?: CourseTypeEnum;
-  status?: StudentStatusEnum;
+  name?: string;
+  surname?: string;
+  email?: string;
+  phone?: string;
+  age?: number;
+  course?: string;
+  course_format?: string;
+  course_type?: string;
+  status?: string;
   sum?: number;
   alreadyPaid?: number;
   _managerId?: string | null;
   group?: string;
+  utm?: string;
+  msg?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

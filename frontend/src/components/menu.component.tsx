@@ -3,6 +3,7 @@ import React, {FC, useEffect, useState} from 'react';
 import {IManager} from "@/models/IManager";
 import {authService} from "@/services/auth.service";
 import {useRouter} from "next/navigation";
+import Image from 'next/image';
 interface IProps {
     onCreateManager: () => void;
 }
@@ -38,14 +39,26 @@ const MenuComponent:FC<IProps> = ({onCreateManager}) => {
                         onClick={onCreateManager}
                         className="bg-lime-700 px-3 py-1 rounded "
                     >
-                        <img  src="/images/image1.png" alt="create" className=" w-8 h-8"/>
+                        <Image
+                            src="/images/image1.png"
+                            alt="create"
+                            width={32}
+                            height={32}
+                            className="w-8 h-8"
+                        />
                     </button>
                 )}
                 <button
                     className="bg-lime-700 px-3 py-1 rounded"
                     onClick={logoutHandler}
                 >
-                    <img src="/images/image2.png" alt="logout" className="w-8 h-8"/>
+                    <Image
+                        src="/images/image2.png"
+                        alt="logout"
+                        width={32}
+                        height={32}
+                        className="w-8 h-8"
+                    />
                 </button>
             </div>
         </div>

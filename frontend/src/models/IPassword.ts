@@ -1,4 +1,3 @@
-import {IManager} from "@/models/IManager";
 
 export interface IPasswordCreate {
     password: string;

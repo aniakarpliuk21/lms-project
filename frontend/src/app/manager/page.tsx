@@ -1,11 +1,11 @@
-import React from 'react';
+import {Suspense} from "react";
+import ManagerPage from "@/pages/managerPage";
 
 
-const ManagerPage = () => {
+export default function ManagerPageWrapper() {
     return (
-        <div>
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+            <ManagerPage />
+        </Suspense>
     );
-};
-
-export default ManagerPage;
+}

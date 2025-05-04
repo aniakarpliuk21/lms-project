@@ -1,38 +1,28 @@
 import { model, Schema } from "mongoose";
 
-import {
-  CourseEnum,
-  CourseFormatEnum,
-  CourseTypeEnum,
-  StudentStatusEnum,
-} from "../enums/student.enum";
 import { IStudent } from "../interfaces/student.interface";
 import { Manager } from "./manager.model";
 
 const studentSchema = new Schema(
   {
-    name: { type: String, required: true },
-    surname: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true, unique: true },
-    age: { type: Number, required: true },
+    name: { type: String },
+    surname: { type: String },
+    email: { type: String },
+    phone: { type: String },
+    age: { type: Number },
     course: {
-      enum: CourseEnum,
       type: String,
       default: null,
     },
     course_format: {
-      enum: CourseFormatEnum,
       type: String,
       default: null,
     },
     course_type: {
-      enum: CourseTypeEnum,
       type: String,
       default: null,
     },
     status: {
-      enum: StudentStatusEnum,
       type: String,
       default: null,
     },
@@ -44,6 +34,8 @@ const studentSchema = new Schema(
       default: null,
     },
     group: { type: String, default: null },
+    utm: { type: String, default: null },
+    msg: { type: String, default: null },
   },
   { timestamps: true, versionKey: false },
 );

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { FC } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import {useSearchParamsHandler} from "@/hooks/useSearchParamsHundler";
 type PaginationProps = {
     totalManager: number;
     limit: number;
@@ -9,12 +10,11 @@ type PaginationProps = {
 
 const PaginationComponent: FC<PaginationProps> = ({ totalManager,limit }) => {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const totalPages = totalManager/limit
-    const currentPage = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1;
-
+    const { getPageParam } = useSearchParamsHandler();
+    const currentPage = parseInt(getPageParam());
     const updatePage = (newPage: number) => {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(window.location.search);
         params.set('page', newPage.toString());
         router.push(`?${params.toString()}`);
     };

@@ -17,7 +17,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
                 setForgotPassword(true)
                 setTimeout(() => {
                     setIsEmailSent(false);
-                }, 3000);
+                }, 5000);
             }
         }catch (e) {
             console.error("Error sending forgot password email", e);
@@ -53,6 +53,9 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
             if(response){
                 setBanManager(false)
                 setUnbanManager(true)
+                setTimeout(() => {
+                    setUnbanManager(false);
+                }, 5000);
             }
         }catch (e) {
             console.error("Error unban manager", e);
@@ -74,6 +77,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
                 {manager.isVerified && (
                     <button
                         onClick={hundleRecoveryPassword}
+                        disabled={forgotPassword}
                         className="bg-lime-600 hover:bg-green-700 text-white px-3 py-1 text-sm mx-1 rounded"
                     >
                         RECOVERY PASSWORD
@@ -97,12 +101,15 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
                 </button>
                 <button
                     onClick={hundleUnbanManager}
-                    disabled={!banManager}
+                    disabled={!banManager || unbanManager}
                     className={`px-3 py-1 text-sm mx-1 rounded text-white ${
                         !banManager ? 'bg-gray-400 cursor-not-allowed' : 'bg-lime-600 hover:bg-lime-700'
                     }`}
                 >UNBAN
                 </button>
+                {isEmailSent && (
+                    <p className="text-green-600 font-semibold mt-2">Email has been sent successfully!</p>
+                )}
             </div>
         </div>
             );
