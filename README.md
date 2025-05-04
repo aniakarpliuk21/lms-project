@@ -45,24 +45,30 @@ cd lms-project
 cp .env.example .env
 Edit .env and set values for:
 
-3. Start the App with Docker
+3. - To  **backend**:
+ ```bash
+      cd backend
+      npm install
+```
 
-    - Open the terminal and run the following commands:
-      ```bash
+- To  **frontend**:
+  ```bash
+  cd frontend
+  npm install
+     
+4.Start the App with Docker
+- Open the terminal and run the following commands:
+  ```bash
       docker-compose up --build
-      ```
+   ```
 
     - This will build and start all necessary containers: backend, frontend, MongoDB.
 
 3. **Running Locally (without Docker)**:
-    - To  **backend**:
-      ```bash
-      cd backend
-      npm install
+   
     - To run the **frontend**:
       ```bash
       cd frontend
-      npm install
       npm run build
       npm run dev
       ```
