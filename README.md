@@ -45,7 +45,9 @@ cd lms-project
 
 Copy the example file and fill in your environment variables:
 
-cp .env.example .env
+ ```bash
+    cp .env.example .env
+```
 Edit .env and set values
 
 
