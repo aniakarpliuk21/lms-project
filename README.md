@@ -52,8 +52,9 @@ Edit .env and set values
 
 3.**Backend compilation**:
  ```bash
-     cd backend
-     npm run build
+    cd backend
+    npm install
+    npm run build
 ```
 4.**Running Locally (without Docker)**:
 
@@ -62,7 +63,9 @@ Edit .env and set values
 ```
 5.**Running Frontend**: 
  ```bash
-     cd frontend
+     cd ../frontend
+     npm install
+     npm run build
      npm run start
 ```
 The frontend will be available at `http://localhost:3000`.
