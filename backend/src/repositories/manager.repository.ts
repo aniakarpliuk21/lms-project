@@ -11,7 +11,7 @@ import {
 import { Manager } from "../model/manager.model";
 
 class ManagerRepository {
-  public async getList(
+  public async getManagerList(
     query: IManagerListQuery,
   ): Promise<{ entities: IManager[]; total: number }> {
     const filterObj: FilterQuery<IManager> = { isDeleted: false };
@@ -22,7 +22,7 @@ class ManagerRepository {
     const sortObj: { [key: string]: SortOrder } = {};
     switch (query.orderBy) {
       case ManagerListOrderEnum.CREATED_AT:
-        sortObj.created_at = query.order;
+        sortObj.createdAt = query.order;
         break;
       default:
         throw new ApiError("Invalid order by", 400);
@@ -32,6 +32,9 @@ class ManagerRepository {
       Manager.countDocuments(filterObj),
     ]);
     return { entities, total };
+  }
+  public async getManagerListFull(): Promise<IManager[]> {
+    return await Manager.find();
   }
 
   public async createAdmin(dto: IAdminCreateDto): Promise<IManager> {

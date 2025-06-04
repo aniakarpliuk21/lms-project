@@ -10,17 +10,7 @@ services:
       - ./backend:/app
       - /app/node_modules
     restart: on-failure
-    command: npm run start:dev
-  db:
-    image: mongo
-    ports:
-      - "5555:27017"
-    restart: always
-    env_file:
-      - .env
-    volumes:
-      - ./mongo_db:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    command: npm run start
   web:
     image: nginx:alpine
     ports:

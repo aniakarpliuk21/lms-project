@@ -1,7 +1,7 @@
 import Joi from "joi";
 const password = Joi.string()
-    .min(8)
-    .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%_*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
+    .min(5)
+    .pattern(/^.{5,}$/)
     .messages({
         "string.base": "Password must be a string",
         "string.empty": "Password cannot be empty",

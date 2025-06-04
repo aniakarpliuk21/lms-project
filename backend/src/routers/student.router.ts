@@ -13,18 +13,21 @@ router.post(
   studentController.createStudent,
 );
 router.get(
-  "/",
+  "/statistics",
   authMiddleware.checkAccessToken,
-  studentController.getStudentList,
+  studentController.getStudentStatistics,
 );
 router.get(
-  "/:studentId",
-  commonMiddleware.isValid("studentId"),
-  studentController.getStudentById,
+  "/",
+  commonMiddleware.validateQuery(StudentValidator.getListQuery),
+  authMiddleware.checkAccessToken,
+  studentController.getStudentList,
 );
 router.put(
   "/:studentId",
   commonMiddleware.isValid("studentId"),
+  commonMiddleware.validateBody(StudentValidator.updateStudent),
+  authMiddleware.checkAccessToken,
   studentController.updateStudent,
 );
 router.delete(

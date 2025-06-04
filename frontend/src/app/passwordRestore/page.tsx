@@ -6,7 +6,7 @@ import {useRouter} from "next/navigation";
 import {IForgotPassword, IForgotPasswordSet} from "@/models/IPassword";
 import {passwordValidator} from "@/validators/password.validator";
 import {passwordService} from "@/services/password.service";
-import {useSearchParamsHandler} from "@/hooks/useSearchParamsHundler";
+import {useAppSearchParams} from "@/hooks/useAppSearchParams";
 
 const RestorePasswordPage = () => {
         const {handleSubmit, register, formState:{errors,isValid}} = useForm<IForgotPassword>(
@@ -14,7 +14,7 @@ const RestorePasswordPage = () => {
                 resolver:joiResolver(passwordValidator.forgotPassword)});
         const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
-        const { getParam } = useSearchParamsHandler();
+        const { getParam } = useAppSearchParams();
         const router = useRouter();
     useEffect(() => {
         const tokenFromUrl = getParam("token");
@@ -32,7 +32,6 @@ const RestorePasswordPage = () => {
                         password: formData.password,
                         token
                     }
-                    console.log(dto);
                     const response = await passwordService.forgotPasswordSet(dto);
                     if (response) {
                         router.push("/");

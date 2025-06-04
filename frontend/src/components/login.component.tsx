@@ -21,16 +21,7 @@ const [isAuthState, setIsAuthState] = useState<boolean>(false);
 
             setIsAuthState( isAuth );
             if (isAuth) {
-                const manager = JSON.parse(localStorage.getItem('manager') || '{}');
-                if (manager.role === "admin") {
-                    console.log("Admin logged in");
-                    router.push("/adminPanel");
-                } else if (manager.role === "manager") {
-                    console.log("Manager logged in");
                     router.push("/manager");
-                } else {
-                    setErrorMessage("Unknown user role");
-                }
             } else {
                 setErrorMessage("Login failed. Please check your credentials.");
             }

@@ -32,6 +32,18 @@ class StudentController {
       next(e);
     }
   }
+  public async getStudentStatistics(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await studentService.getStudentStatistics();
+      res.json(result);
+    } catch (e) {
+      next(e);
+    }
+  }
   public async getStudentById(req: Request, res: Response, next: NextFunction) {
     try {
       const studentId = req.params.studentId;

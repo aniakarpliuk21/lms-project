@@ -13,6 +13,7 @@ import {
 } from "../interfaces/manager.interface";
 import { IPasswordCreateDto } from "../interfaces/password.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
+import { managerPresenter } from "../presenters/manager.presenter";
 import { authService } from "../services/auth.service";
 import { emailService } from "../services/email.service";
 import { managerService } from "../services/manager.service";
@@ -57,6 +58,18 @@ class AuthController {
       next(e);
     }
   }
+  public async getManagerListFull(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await managerService.getManagerListFull();
+      res.json(result);
+    } catch (e) {
+      next(e);
+    }
+  }
   public async login(req: Request, res: Response, next: NextFunction) {
     try {
       const dto = req.body as IManagerLoginDto;
@@ -94,6 +107,16 @@ class AuthController {
       const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
       const result = await authService.logoutAll(tokenPayload);
       res.json(result);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async getMe(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
+      const result = await managerService.getMe(tokenPayload);
+      const response = managerPresenter.toResponse(result);
+      res.status(200).json(response);
     } catch (e) {
       next(e);
     }
@@ -178,6 +201,15 @@ class AuthController {
       const { managerId } = req.body;
       await managerService.unbanManager(managerId);
       res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async getManagerById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const managerId = req.params.managerId;
+      const result = await managerService.getManagerById(managerId);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }

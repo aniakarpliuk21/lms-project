@@ -63,7 +63,7 @@ const CreateManagerComponent:FC<IProps> = ({isOpen,onClose, onManagerCreated}) =
                     </label>
                     <input
                         type="text"
-                        id="surnname"
+                        id="surname"
                         placeholder={"Enter manager's surname"} {...register("surname")}
                         className="mt-1 w-full bg-gray-200 rounded-md border border-gray-200 p-2 focus:border-lime-600 focus:outline-none"
                     />
@@ -73,6 +73,7 @@ const CreateManagerComponent:FC<IProps> = ({isOpen,onClose, onManagerCreated}) =
                 <div className="w-full flex justify-evenly">
                     <button
                         className="rounded-md bg-lime-600 p-2 w-30 text-white transition hover:bg-lime-600"
+                        type="button"
                         onClick={onClose}
                     >Cancel
                     </button>

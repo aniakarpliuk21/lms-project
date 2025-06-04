@@ -1,11 +1,18 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 import { ManagerStatusEnum } from "../enums/manager-status.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { IManager } from "../interfaces/manager.interface";
 
+const AutoIncrement = require("mongoose-sequence")(mongoose);
+
 const managerSchema = new Schema(
   {
+    id: {
+      type: Number,
+      unique: true,
+      index: true,
+    },
     name: { type: String, required: true },
     surname: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -31,5 +38,9 @@ const managerSchema = new Schema(
   },
   { timestamps: true, versionKey: false },
 );
-
+managerSchema.plugin(AutoIncrement, {
+  inc_field: "id",
+  id: "manager_seq",
+  start_seq: 1,
+});
 export const Manager = model<IManager>("managers", managerSchema);

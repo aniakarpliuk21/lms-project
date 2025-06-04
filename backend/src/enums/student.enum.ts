@@ -18,7 +18,7 @@ export enum CourseTypeEnum {
   "VIP" = "vip",
 }
 export enum StudentStatusEnum {
-  "IN WORK" = "In work",
+  "IN_WORK" = "In work",
   "NEW" = "New",
   "AGGRE" = "Aggre",
   "DISAGGRE" = "Disaggre",

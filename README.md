@@ -30,50 +30,36 @@ _______________
 
 1. **User Roles**:
     - `Admin`: Can manage everything in the system.
+    - `Manager`: Can manage students.
 
 _______________
 
 How to Run the Project
 
-1. Clone the repository
+1. **Clone the repository**:
 
 git clone https://github.com/aniakarpliuk21/lms-project.git
 cd lms-project
-2. Create .env File
-   Copy the example file and fill in your environment variables:
+
+2.**Create .env File**:
+
+Copy the example file and fill in your environment variables:
 
 cp .env.example .env
-Edit .env and set values for:
+Edit .env and set values
 
-3. - To  **backend**:
+
+3.**Running Locally (without Docker)**:
+
  ```bash
-      cd backend
-      npm install
+     docker compose up --build
 ```
-
-- To  **frontend**:
-  ```bash
-  cd frontend
-  npm install
-     
-4.Start the App with Docker
-- Open the terminal and run the following commands:
-  ```bash
-      docker-compose up --build
-   ```
-
-    - This will build and start all necessary containers: backend, frontend, MongoDB.
-
-3. **Running Locally (without Docker)**:
-   
-    - To run the **frontend**:
-      ```bash
-      cd frontend
-      npm run build
-      npm run dev
-      ```
-
-   The frontend will be available at `http://localhost:3000`.
+3.**Running Frontend**: 
+ ```bash
+     cd frontend
+     npm run start
+```
+The frontend will be available at `http://localhost:3000`.
 
 
 ________
@@ -84,7 +70,9 @@ The backend API supports Swagger or Postman
 Swagger:
 http://localhost/api/docs
 
-Postman Collection: https://drive.google.com/file/d/1BtODGiYwXsMbR41aN2bKHU30qLXnJ2P3/view?usp=sharing
+Postman Collection: 
+
+https://drive.google.com/file/d/1JowZlKZ5oB-p8OYXjlNvMC7ZqtuW62EG/view?usp=sharing
 
 ...
 

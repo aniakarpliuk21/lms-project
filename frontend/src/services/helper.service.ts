@@ -1,6 +1,6 @@
 import {authService} from "@/services/auth.service";
 
-const myInterceptors = async (url: string, options: RequestInit) => {
+const myInterceptors = async (url: string, options: RequestInit, retry = true) => {
     try {
         const tokenPair = JSON.parse(localStorage.getItem('tokenPair') || '{}');
         const accessToken = tokenPair?.accessToken;
@@ -11,9 +11,9 @@ const myInterceptors = async (url: string, options: RequestInit) => {
             };
         }
         const response = await fetch(url, options);
-        if (response.status === 401) {
+        if (response.status === 401 && retry) {
             await authService.refresh();
-            return myInterceptors(url, options);
+            return myInterceptors(url, options,false);
         }
         return response;
     } catch (error) {

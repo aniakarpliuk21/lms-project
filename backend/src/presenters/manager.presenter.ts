@@ -8,6 +8,7 @@ class ManagerPresenter {
   public toResponse(entity: IManager) {
     return {
       _id: entity._id,
+      id: entity.id,
       name: entity.name,
       surname: entity.surname,
       email: entity.email,
@@ -26,6 +27,7 @@ class ManagerPresenter {
   public toShortResponse(entity: IManager) {
     return {
       _id: entity._id,
+      id: entity.id,
       name: entity.name,
       surname: entity.surname,
       email: entity.email,

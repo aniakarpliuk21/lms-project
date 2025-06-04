@@ -1,13 +1,13 @@
 import Joi from "joi";
 const name = Joi.string()
-    .pattern(/^[A-Z][a-zA-Z]{1,19}$/)
+    .pattern(/^[a-zA-Zа-яіїєґА-ЯІЇЄҐ]{2,20}$/)
     .messages({
         "string.base": "Name must be a string",
         "string.empty": "Name cannot be empty",
         "any.required": "Name is a required field",
     });
 const surname = Joi.string()
-    .pattern(/^[A-Z][a-zA-Z]{1,19}$/)
+    .pattern(/^[a-zA-Zа-яіїєґА-ЯІЇЄҐ]{2,20}$/)
     .messages({
         "string.base": "Surname must be a string",
         "string.empty": "Surname cannot be empty",
@@ -23,8 +23,8 @@ const email = Joi.string()
             "string.required": "Email is a required field",
         });
 const password = Joi.string()
-    .min(8)
-    .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%_*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
+    .min(5)
+    .pattern(/^.{5,}$/)
         .messages({
             "string.base": "Password must be a string",
             "string.empty": "Password cannot be empty",

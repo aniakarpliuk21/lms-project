@@ -2,16 +2,16 @@
 
 import React, { FC } from 'react';
 import { useRouter } from 'next/navigation';
-import {useSearchParamsHandler} from "@/hooks/useSearchParamsHundler";
+import {useAppSearchParams} from "@/hooks/useAppSearchParams";
 type PaginationProps = {
     totalManager: number;
     limit: number;
 };
 
-const PaginationComponent: FC<PaginationProps> = ({ totalManager,limit }) => {
+const ManagerPaginationComponent:FC<PaginationProps> = ({ totalManager,limit }) => {
     const router = useRouter();
-    const totalPages = totalManager/limit
-    const { getPageParam } = useSearchParamsHandler();
+    const totalPages = Math.ceil(totalManager / limit);
+    const { getPageParam } = useAppSearchParams();
     const currentPage = parseInt(getPageParam());
     const updatePage = (newPage: number) => {
         const params = new URLSearchParams(window.location.search);
@@ -42,4 +42,4 @@ const PaginationComponent: FC<PaginationProps> = ({ totalManager,limit }) => {
 );
 };
 
-export default PaginationComponent;
+export default ManagerPaginationComponent;

@@ -24,9 +24,11 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.0",
+    "mongoose-sequence": "^6.0.1",
     "nodemailer": "^6.10.0",
     "nodemailer-express-handlebars": "^6.1.2",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.1",

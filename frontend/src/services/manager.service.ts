@@ -2,6 +2,8 @@ import {IManager, IManagerCreate} from "@/models/IManager";
 import {urlBuilder} from "@/urls/urls";
 import {ManagerResponseType} from "@/models/ManagerResponseType";
 import {myInterceptors} from "@/services/helper.service";
+import {OrderEnum} from "@/enums/oreder.enum";
+import {ManagerListOrderEnum} from "@/enums/manager-list-order.enum";
 
 const managerService = {
     createManager: async (registerData:IManagerCreate): Promise<IManager> => {
@@ -17,14 +19,51 @@ const managerService = {
 
 
     },
-    getAllManagers: async (page:number): Promise<ManagerResponseType> => {
-            const url = urlBuilder.getAllManagerUrl() + `?orderBy=createdAt&limit=6&page=${page}`;
+    getMe : async(): Promise<IManager> => {
+        const url = urlBuilder.getMeUrl();
+        const options: RequestInit = {
+            method: 'GET',
+            headers: {
+        'Content-Type': 'application/json',
+            }
+        };
+        return (await myInterceptors(url, options).then(value => value.json()));
+    },
+    getManagerById : async(managerId:string): Promise<IManager> => {
+        const url = urlBuilder.getManagerByIdUrl() + `/${managerId}`;
+        const options: RequestInit = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }
+        return (await myInterceptors(url, options).then(value => value.json()));
+    },
+    getAllManagers: async (page: number, search: string, limit: number, order: OrderEnum, orderBy: ManagerListOrderEnum): Promise<ManagerResponseType> => {
+        let url = urlBuilder.getAllManagerUrl() + `?orderBy=${orderBy}&order=${order}&limit=${limit}&page=${page}`;
+
+        if (search) {
+            url += `&search=${encodeURIComponent(search)}`;
+        }
             const options: RequestInit = {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
                 },
             }
+        return (await myInterceptors(url, options).then(value => value.json()));
+
+
+    },
+    getAllManagersFull:async (): Promise<IManager[]> => {
+        const url = urlBuilder.getAllManagerFullUrl();
+
+        const options: RequestInit = {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
         return (await myInterceptors(url, options).then(value => value.json()));
 
 

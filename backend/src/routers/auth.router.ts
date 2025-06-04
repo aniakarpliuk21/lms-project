@@ -27,8 +27,12 @@ router.get(
   "/getManager",
   commonMiddleware.validateQuery(ManagerValidator.getListQuery),
   authMiddleware.checkAccessToken,
-  commonMiddleware.isAdmin,
   authController.getManagerList,
+);
+router.get(
+  "/getManagerFull",
+  authMiddleware.checkAccessToken,
+  authController.getManagerListFull,
 );
 router.post(
   "/login",
@@ -46,6 +50,8 @@ router.post(
   authMiddleware.checkAccessToken,
   authController.logoutAll,
 );
+router.get("/me", authMiddleware.checkAccessToken, authController.getMe);
+
 router.post(
   "/addPassword",
   commonMiddleware.validateBody(ManagerValidator.addPassword),
@@ -92,5 +98,11 @@ router.post(
   authMiddleware.checkAccessToken,
   commonMiddleware.isAdmin,
   authController.unbanManager,
+);
+router.get(
+  "/manager/:managerId",
+  authMiddleware.checkAccessToken,
+  commonMiddleware.isValid("managerId"),
+  authController.getManagerById,
 );
 export const authRouter = router;

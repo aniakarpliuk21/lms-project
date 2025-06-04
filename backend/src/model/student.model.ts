@@ -1,10 +1,17 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 import { IStudent } from "../interfaces/student.interface";
 import { Manager } from "./manager.model";
 
+const AutoIncrement = require("mongoose-sequence")(mongoose);
+
 const studentSchema = new Schema(
   {
+    id: {
+      type: Number,
+      unique: true,
+      index: true,
+    },
     name: { type: String },
     surname: { type: String },
     email: { type: String },
@@ -39,5 +46,9 @@ const studentSchema = new Schema(
   },
   { timestamps: true, versionKey: false },
 );
-
+studentSchema.plugin(AutoIncrement, {
+  inc_field: "id",
+  id: "student_seq",
+  start_seq: 1,
+});
 export const Student = model<IStudent>("students", studentSchema);

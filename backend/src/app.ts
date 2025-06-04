@@ -3,11 +3,14 @@ import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 
 import { configure } from "./configs/configure";
-import { createAdmin } from "./configs/create-admin";
-import { importStudents } from "./configs/import-students";
+// import { createAdmin } from "./configs/create-admin";
+// import { importStudents } from "./configs/import-students";
+// import studentsData from "./configs/students.json";
 import { cronRunner } from "./crons";
 import { ApiError } from "./errors/api-error";
 import { authRouter } from "./routers/auth.router";
+import { commentRouter } from "./routers/comment.router";
+import { groupRouter } from "./routers/group.router";
 import { studentRouter } from "./routers/student.router";
 
 const app = express();
@@ -17,6 +20,8 @@ app.use(cors());
 
 app.use("/api/students", studentRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/comments", commentRouter);
+app.use("/api/groups", groupRouter);
 app.use(
   "*",
   (error: ApiError, req: Request, res: Response, next: NextFunction) => {
@@ -49,8 +54,8 @@ const connection = async () => {
 const start = async () => {
   try {
     await connection();
-    await createAdmin();
-    await importStudents();
+    // await createAdmin();
+    // await importStudents(studentsData);
     await app.listen(configure.port, () => {
       console.log(`Server has been started on port ${configure.port}`);
     });

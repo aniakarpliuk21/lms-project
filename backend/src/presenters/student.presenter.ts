@@ -8,6 +8,7 @@ class StudentPresenter {
   public toResponse(entity: IStudent) {
     return {
       _id: entity._id,
+      id: entity.id,
       name: entity.name,
       surname: entity.surname,
       email: entity.email,
@@ -23,23 +24,6 @@ class StudentPresenter {
       group: entity.group,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
-    };
-  }
-  public toShortResponse(entity: IStudent) {
-    return {
-      _id: entity._id,
-      name: entity.name,
-      surname: entity.surname,
-      email: entity.email,
-      phone: entity.phone,
-      age: entity.age,
-      course: entity.course,
-      course_format: entity.course_format,
-      course_type: entity.course_type,
-      status: entity.status,
-      sum: entity.sum,
-      alreadyPaid: entity.alreadyPaid,
-      createdAt: entity.createdAt,
     };
   }
   public toResponseList(

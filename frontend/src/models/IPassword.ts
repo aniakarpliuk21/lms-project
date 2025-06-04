@@ -11,7 +11,3 @@ export interface IForgotPasswordSet {
     password: string;
     token: string;
 }
-export interface IChangePassword {
-    oldPassword: string;
-    newPassword: string;
-};

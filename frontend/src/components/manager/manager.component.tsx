@@ -10,10 +10,10 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
     const [forgotPassword, setForgotPassword] = useState<boolean>(false);
     const [banManager, setBanManager] = useState<boolean>(manager.isBanned || false);
     const [unbanManager, setUnbanManager] = useState<boolean>(false);
-    const hundleRecoveryPassword = async () => {
+    const handleRecoveryPassword = async () => {
         try{
-            const responce = await passwordService.sendForgotPasswordEmail(manager.email)
-            if(responce){
+            const response = await passwordService.sendForgotPasswordEmail(manager.email)
+            if(response){
                 setForgotPassword(true)
                 setTimeout(() => {
                     setIsEmailSent(false);
@@ -23,7 +23,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
             console.error("Error sending forgot password email", e);
         }
     }
-        const hundleSendActivateEmail = async () =>{
+        const handleSendActivateEmail = async () =>{
             try{
                 const response = await managerService.sendActivateEmail(manager.email)
                 if(response){
@@ -37,7 +37,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
                 console.error("Error sending activate email", e);
             }
         }
-        const hundleBanManager = async () => {
+        const handleBanManager = async () => {
         try{
             const response = await managerService.banManager(manager._id)
             if(response){
@@ -47,7 +47,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
             console.error("Error ban manager", e);
         }
         }
-    const hundleUnbanManager = async () => {
+    const handleUnbanManager = async () => {
         try{
             const response = await managerService.unbanManager(manager._id)
             if(response){
@@ -65,7 +65,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
     return (
         <div className="border border-lime-700 rounded-md p-3 mb-4 flex justify-between flex-wrap">
         <div>
-            <div className="text-sm mb-1">id: {manager._id}</div>
+            <div className="text-sm mb-1">id: {manager.id}</div>
             <div className="text-sm mb-1">email: {manager.email}</div>
             <div className="text-sm mb-1">name: {manager.name}</div>
             <div className="text-sm mb-1">surname: {manager.surname}</div>
@@ -76,7 +76,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
             <div>
                 {manager.isVerified && (
                     <button
-                        onClick={hundleRecoveryPassword}
+                        onClick={handleRecoveryPassword}
                         disabled={forgotPassword}
                         className="bg-lime-600 hover:bg-green-700 text-white px-3 py-1 text-sm mx-1 rounded"
                     >
@@ -85,14 +85,14 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
                 )}
                 {!manager.isVerified && (
                         <button
-                            onClick={hundleSendActivateEmail}
+                            onClick={handleSendActivateEmail}
                             className="bg-lime-600 hover:bg-green-700 text-white px-3 py-1 text-sm mx-1 rounded">
                             ACTIVATE
                         </button>
                     )
                 }
                 <button
-                    onClick={hundleBanManager}
+                    onClick={handleBanManager}
                     disabled={banManager}
                     className={`px-3 py-1 text-sm mx-1 rounded text-white ${
                         banManager ? 'bg-gray-400 cursor-not-allowed' : 'bg-lime-600 hover:bg-lime-700'
@@ -100,7 +100,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
                 >BAN
                 </button>
                 <button
-                    onClick={hundleUnbanManager}
+                    onClick={handleUnbanManager}
                     disabled={!banManager || unbanManager}
                     className={`px-3 py-1 text-sm mx-1 rounded text-white ${
                         !banManager ? 'bg-gray-400 cursor-not-allowed' : 'bg-lime-600 hover:bg-lime-700'
