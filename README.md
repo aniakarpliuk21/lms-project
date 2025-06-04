@@ -62,8 +62,10 @@ Edit .env and set values
      docker compose up --build
 ```
 5.**Running Frontend**: 
+
+Open new terminal
  ```bash
-     cd ../frontend
+     cd frontend
      npm install
      npm run build
      npm run start
