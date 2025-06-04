@@ -50,13 +50,17 @@ Copy the example file and fill in your environment variables:
 ```
 Edit .env and set values
 
-
-3.**Running Locally (without Docker)**:
+3.**Backend compilation**:
+ ```bash
+     cd backend
+     npm run build
+```
+4.**Running Locally (without Docker)**:
 
  ```bash
      docker compose up --build
 ```
-3.**Running Frontend**: 
+5.**Running Frontend**: 
  ```bash
      cd frontend
      npm run start
