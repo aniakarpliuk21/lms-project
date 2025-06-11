@@ -24,7 +24,6 @@ const StudentListComponent: FC<Props> = ({onSortChange,onUpdateSuccess}) => {
         order: sortOrder,
         orderBy: sortField
     } = useAppSelector(state => state.studentStore.students);
-    const managers = useAppSelector(state => state.managerStore.managersFull);
     useEffect(() => {
         dispatch(managerSliceActions.getAllManagersFull());
     }, [dispatch]);
@@ -64,7 +63,7 @@ const StudentListComponent: FC<Props> = ({onSortChange,onUpdateSuccess}) => {
             <tr>
                 {[
                     "ID", "Name", "Surname", "Email", "Phone", "Age", "Course", "Course format",
-                    "Course type", "Status", "Sum", "Group", "Already Paid", "Created At", "Manager"
+                    "Course type", "Status", "Sum", "Already Paid", "Group", "Created At", "Manager"
                 ].map((header, i) => (
                     <th
                         key={i}
@@ -89,7 +88,6 @@ const StudentListComponent: FC<Props> = ({onSortChange,onUpdateSuccess}) => {
                         )
                     }
                     onOpenModal={openModal}
-                    managers={managers}
                 />
             ))}
             </tbody>

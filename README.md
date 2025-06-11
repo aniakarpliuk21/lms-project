@@ -68,7 +68,7 @@ Open new terminal
      cd frontend
      npm install
      npm run build
-     npm run start
+     npm start
 ```
 The frontend will be available at `http://localhost:3000`.
 

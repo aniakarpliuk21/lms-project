@@ -2,43 +2,74 @@
 import React from 'react';
 import Image from "next/image";
 import {useAppSelector} from "@/hooks/useAppSelector";
+import {useForm} from "react-hook-form";
+import {IStudentSearch} from "@/models/IStudent";
 
 const StudentFilterComponent = () => {
     const {groups, loading} = useAppSelector(state => state.groupStore);
-        return (
+    const {register, getValues, reset} = useForm<IStudentSearch>({});
+    const handleFilter = () => {
+        const values = getValues();
+
+        const filteredForm = Object.fromEntries(
+            Object.entries(values).filter(
+                ([, v]) => v !== "" && v !== undefined && v !== null
+            )
+        );
+        console.log(filteredForm);
+    };
+
+    const handleResetFilter = () => {
+        console.log("Reset filter");
+        reset();
+        handleFilter();
+
+    };
+    const handleCreateExelTable = () => {
+        console.log("Exel file created");
+    }
+    return (
+        <form>
             <div className="flex m-2">
                 <div className="grid grid-cols-6 grid-rows-2 gap-4 w-330">
                     <input
                         type="text"
-                        name="name"
                         placeholder="Name"
+                        {...register("name")}
+                        onBlur={handleFilter}
                         className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700"
                     />
                     <input
                         type="text"
-                        name="surname"
                         placeholder="Surname"
+                        {...register("surname")}
+                        onBlur={handleFilter}
                         className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700"
                     />
                     <input
                         type="text"
-                        name="email"
                         placeholder="Email"
+                        {...register("email")}
+                        onBlur={handleFilter}
                         className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700"
                     />
                     <input
                         type="text"
-                        name="phone"
                         placeholder="Phone"
+                        {...register("phone")}
+                        onBlur={handleFilter}
                         className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700"
                     />
                     <input
                         type="number"
-                        name="age"
                         placeholder="Age"
+                        {...register("age")}
+                        onBlur={handleFilter}
                         className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700"
                     />
-                    <select name="course"
+                    <select
+                            {...register("course")}
+                            onChange={handleFilter}
                             className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700">
                         <option value="">All courses</option>
                         <option value="FS">FS</option>
@@ -48,13 +79,17 @@ const StudentFilterComponent = () => {
                         <option value="FE">FE</option>
                         <option value="PCX">PCX</option>
                     </select>
-                    <select name="course_format"
+                    <select
+                            {...register("course_format")}
+                            onChange={handleFilter}
                             className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700">
                         <option value="">All format</option>
                         <option value="static">static</option>
                         <option value="online">online</option>
                     </select>
-                    <select name="course_type"
+                    <select
+                            {...register("course_type")}
+                            onChange={handleFilter}
                             className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700">
                         <option value="">All type</option>
                         <option value="pro">pro</option>
@@ -63,7 +98,9 @@ const StudentFilterComponent = () => {
                         <option value="incubator">incubator</option>
                         <option value="vip">vip</option>
                     </select>
-                    <select name="status"
+                    <select
+                            {...register("status")}
+                            onChange={handleFilter}
                             className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700">
                         <option value="">All statuses</option>
                         <option value="In work">In work</option>
@@ -73,7 +110,9 @@ const StudentFilterComponent = () => {
                         <option value="Dubbing">Dubbing</option>
                     </select>
 
-                    <select name="group"
+                    <select
+                            {...register("group")}
+                            onChange={handleFilter}
                             className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700">
                         <option value="">All groups</option>
                         {loading ? (
@@ -88,14 +127,16 @@ const StudentFilterComponent = () => {
                     </select>
                     <input
                         type="date"
-                        name="startDate"
                         placeholder="Start date"
+                        {...register("startDate")}
+                        onChange={handleFilter}
                         className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700"
                     />
                     <input
                         type="date"
-                        name="endDate"
                         placeholder="End date"
+                        {...register("endDate")}
+                        onChange={handleFilter}
                         className="w-full rounded-md bg-gray-100 border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-lime-600 text-gray-700"
                     />
                 </div>
@@ -103,20 +144,28 @@ const StudentFilterComponent = () => {
                     <label className="flex  gap-2 h-8 items-center justify-center w-8 m-1">
                         <input
                             type="checkbox"
-                            name="managerOnly"
+                            {...register("managerOnly")}
+                            onChange={handleFilter}
                             className="accent-green-600"
                         />
                         My
                     </label>
-                    <button className="bg-lime-600  m-1 w-8 h-8">
+                    <button
+                        type="button"
+                        onClick={handleResetFilter}
+                        className="bg-lime-600  m-1 w-8 h-8">
                         <Image src="/images/image6.png" alt="prev" width={10} height={10} className="w-6 h-6"/>
                     </button>
-                    <button className="bg-lime-600 m-1 w-8 h-8">
+                    <button
+                        type="button"
+                        onClick={handleCreateExelTable}
+                        className="bg-lime-600 m-1 w-8 h-8">
                         <Image src="/images/image7.png" alt="prev" width={10} height={10} className="w-6 h-6"/>
                     </button>
                 </div>
             </div>
-        );
+        </form>
+    );
 };
 
 export default StudentFilterComponent;

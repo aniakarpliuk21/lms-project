@@ -7,7 +7,7 @@ import CommentComponent from "@/components/comment.component";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {commentSliceActions} from "@/redux/slices/commentSlice/commentSlice";
-import {IManager} from "@/models/IManager";
+
 
 interface IProps {
     student: IStudent;
@@ -15,11 +15,11 @@ interface IProps {
     isSelected: boolean;
     onToggle: () => void;
     onOpenModal: (student: IStudent) => void;
-    managers: IManager[];
 }
 
-const StudentComponent: FC<IProps> = ({ student, rowClass = "", isSelected, onToggle, onOpenModal,managers}) => {
+const StudentComponent: FC<IProps> = ({ student, rowClass = "", isSelected, onToggle, onOpenModal}) => {
     const dispatch = useAppDispatch();
+    const managers = useAppSelector(state => state.managerStore.managersFull);
     const comments = useAppSelector(state => state.commentStore.comments);
     const { handleSubmit, register, formState: { errors }, reset } = useForm<ICommentCreate>();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -74,8 +74,8 @@ const StudentComponent: FC<IProps> = ({ student, rowClass = "", isSelected, onTo
                 <td className="px-2 py-1">{student.course_type == null ? "null" : student.course_type}</td>
                 <td className="px-2 py-1">{student.status == null ? "null" : student.status}</td>
                 <td className="px-2 py-1">{student.sum == null ? "null" : student.sum}</td>
-                <td className="px-2 py-1">{student.group == null ? "null" : student.group}</td>
                 <td className="px-2 py-1">{student.alreadyPaid == null ? "null" : student.alreadyPaid}</td>
+                <td className="px-2 py-1">{student.group == null ? "null" : student.group}</td>
                 <td className="px-2 py-1">{new Date(student.createdAt).toLocaleDateString()}</td>
                 <td className="px-2 py-1"> {studentManager?.name && studentManager?.surname
                     ? `${studentManager.name} ${studentManager.surname}`
@@ -84,7 +84,7 @@ const StudentComponent: FC<IProps> = ({ student, rowClass = "", isSelected, onTo
 
             {isSelected && (
                 <tr className="bg-gray-50">
-                    <td colSpan={15} className="p-3">
+                <td colSpan={15} className="p-3">
                         <div className="flex justify-between">
                             <div>
                                 <div><strong>Message:</strong> {student.msg}</div>
