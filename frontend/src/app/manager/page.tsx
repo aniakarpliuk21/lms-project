@@ -1,5 +1,5 @@
 "use client";
-import React, {Suspense, useEffect, useState} from "react";
+import React, {Suspense, useEffect} from "react";
 import {StudentListOrderEnum} from "@/enums/student-list-order.enum";
 import {OrderEnum} from "@/enums/oreder.enum";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
@@ -62,31 +62,15 @@ const ManagerPage = () => {
         updateParams({ page: newPage.toString() });
     };
 
-    const [prevPage, setPrevPage] = useState<string | null>(null);
-    const [prevSortField, setPrevSortField] = useState<string | null>(null);
-    const [prevSortOrder, setPrevSortOrder] = useState<string | null>(null);
-    const [prevFilters, setPrevFilters] = useState({});
-
     useEffect(() => {
-        if (
-            pageParam !== prevPage ||
-            sortFieldParam !== prevSortField ||
-            sortOrderParam !== prevSortOrder ||
-            JSON.stringify(appliedFilters) !== JSON.stringify(prevFilters)
-        ) {
-            dispatch(
-                studentSliceActions.getAllStudents({
-                    page: parseInt(pageParam),
-                    sortField: sortFieldParam,
-                    sortOrder: sortOrderParam,
-                    filters: appliedFilters,
-                })
-            );
-            setPrevPage(pageParam);
-            setPrevSortField(sortFieldParam);
-            setPrevSortOrder(sortOrderParam);
-            setPrevFilters(appliedFilters);
-        }
+        dispatch(
+            studentSliceActions.getAllStudents({
+                page: parseInt(pageParam),
+                sortField: sortFieldParam,
+                sortOrder: sortOrderParam,
+                filters: appliedFilters,
+            })
+        );
     }, [pageParam, sortFieldParam, sortOrderParam, appliedFilters, dispatch]);
 
     useEffect(() => {

@@ -90,7 +90,7 @@ https://drive.google.com/file/d/1JowZlKZ5oB-p8OYXjlNvMC7ZqtuW62EG/view?usp=shari
 _______
 To stop the services and remove containers:
 
-docker-compose down
+docker compose down
 
 
 

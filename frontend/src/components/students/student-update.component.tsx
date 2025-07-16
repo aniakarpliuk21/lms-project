@@ -44,7 +44,7 @@ const StudentUpdateComponent:FC<IProps> = ({student,onClose,onUpdateSuccess}) =>
         try {
             const studentId = student._id;
             const dto = Object.fromEntries(
-                Object.entries(formData).filter(([_, value]) =>
+                Object.entries(formData).filter(([, value]) =>
                     typeof value === "string"
                         ? value.trim() !== ""
                         : value !== null && value !== undefined

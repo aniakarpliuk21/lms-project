@@ -1,5 +1,5 @@
 "use client"
-import React, {useCallback, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import Image from "next/image";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {useForm} from "react-hook-form";
@@ -26,8 +26,7 @@ const StudentFilterComponent = () => {
         }
         router.push(`?${params.toString()}`);
     };
-    const debouncedFilter = useCallback(
-        debounce((values: IStudentSearch) => {
+    const debouncedFilter = debounce((values: IStudentSearch) => {
             const manager = localStorage.getItem("manager");
             let managerId: string | null = null;
             if (manager) {
@@ -40,7 +39,7 @@ const StudentFilterComponent = () => {
             }
             const filtered = Object.fromEntries(
                 Object.entries(values)
-                    .filter(([_, v]) => v !== "" && v !== undefined && v !== null)
+                    .filter(([, v]) => v !== "" && v !== undefined && v !== null)
                     .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])
             );
             if (filtered.managerOnly === true || filtered.managerOnly === "true") {
@@ -52,9 +51,7 @@ const StudentFilterComponent = () => {
             delete filtered.managerOnly;
             dispatch(studentSliceActions.setStudentFilter(filtered));
             dispatch(studentSliceActions.setPage(1));
-        }, 500),
-        [dispatch]
-    );
+        }, 500);
     useEffect(() => {
         const subscription = watch((values) => {
             debouncedFilter(values);
