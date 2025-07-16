@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 
 const LoginComponent = () => {
     const router = useRouter();
-const {handleSubmit, register, formState:{errors,isValid}} = useForm<IManagerLogin>(
+const {handleSubmit, register, formState:{isValid}} = useForm<IManagerLogin>(
     {mode:"all",
         resolver:joiResolver(managerValidator.login)});
 const [isAuthState, setIsAuthState] = useState<boolean>(false);
@@ -44,7 +44,6 @@ const [isAuthState, setIsAuthState] = useState<boolean>(false);
                                 placeholder={"Enter your email"} {...register("email")}
                                 className="mt-1 w-full bg-gray-200 rounded-md border border-gray-200 p-2 focus:border-lime-600 focus:outline-none"
                             />
-                        {errors.email && <span>{errors.email.message}</span>}
                     </div>
                     <div className="mb-4">
                         <label htmlFor="password" className="block text-gray-700 font-semibold">
@@ -56,7 +55,6 @@ const [isAuthState, setIsAuthState] = useState<boolean>(false);
                             placeholder={"Enter your password"} {...register("password")}
                             className="mt-1 w-full bg-gray-200 rounded-md border border-gray-200 p-2 focus:border-lime-600 focus:outline-none"
                         />
-                        {errors.password && <span>{errors.password.message}</span>}
                     </div>
                     {errorMessage && <p className="mb-4 text-red-500">{errorMessage}</p>}
                     {isAuthState && (

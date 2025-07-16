@@ -13,7 +13,6 @@ import {
 } from "../interfaces/manager.interface";
 import { IPasswordCreateDto } from "../interfaces/password.interface";
 import { ITokenPayload } from "../interfaces/token.interface";
-import { managerPresenter } from "../presenters/manager.presenter";
 import { authService } from "../services/auth.service";
 import { emailService } from "../services/email.service";
 import { managerService } from "../services/manager.service";
@@ -115,8 +114,7 @@ class AuthController {
     try {
       const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
       const result = await managerService.getMe(tokenPayload);
-      const response = managerPresenter.toResponse(result);
-      res.status(200).json(response);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }
@@ -189,8 +187,9 @@ class AuthController {
   }
   public async banManager(req: Request, res: Response, next: NextFunction) {
     try {
+      const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
       const { managerId } = req.body;
-      await managerService.banManager(managerId);
+      await managerService.banManager(tokenPayload, managerId);
       res.sendStatus(204);
     } catch (e) {
       next(e);
@@ -205,15 +204,15 @@ class AuthController {
       next(e);
     }
   }
-  public async getManagerById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const managerId = req.params.managerId;
-      const result = await managerService.getManagerById(managerId);
-      res.status(200).json(result);
-    } catch (e) {
-      next(e);
-    }
-  }
+  // public async getManagerById(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const managerId = req.params.managerId;
+  //     const result = await managerService.getManagerById(managerId);
+  //     res.status(200).json(result);
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
 }
 
 export const authController = new AuthController();

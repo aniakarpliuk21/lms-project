@@ -8,14 +8,13 @@ import {
   IStudentListQuery,
   IStudentStatistics,
   IStudentUpdateDto,
-  IStunentCreateDto,
 } from "../interfaces/student.interface";
 import { Student } from "../model/student.model";
 
 class StudentRepository {
-  public async createStudent(dto: IStunentCreateDto): Promise<IStudent> {
-    return await Student.create(dto);
-  }
+  // public async createStudent(dto: IStudentCreateDto): Promise<IStudent> {
+  //   return await Student.create(dto);
+  // }
   public async getStudentList(
     query: IStudentListQuery,
   ): Promise<{ entities: IStudent[]; total: number }> {
@@ -32,11 +31,20 @@ class StudentRepository {
       filterObj.surname = { $regex: query.surname, $options: "i" };
     if (query.email) filterObj.email = { $regex: query.email, $options: "i" };
     if (query.phone) filterObj.phone = { $regex: query.phone, $options: "i" };
-    if (query.managerOnly && query.currentManagerId) {
-      filterObj.manager = query.currentManagerId;
+    if (query.currentManagerId) {
+      filterObj._managerId = query.currentManagerId;
+    }
+    if (query.startDate || query.endDate) {
+      filterObj.createdAt = {};
+      if (query.startDate) {
+        filterObj.createdAt.$gte = new Date(query.startDate);
+      }
+      if (query.endDate) {
+        filterObj.createdAt.$lte = new Date(query.endDate);
+      }
     }
     const limit = query.limit || 25;
-    const skip = limit * (query.page - 1);
+    const skip = limit === 0 ? 0 : limit * (query.page - 1);
     const allowedFields = Object.values(StudentListOrderEnum);
     if (!allowedFields.includes(query.orderBy)) {
       throw new ApiError("Invalid order by", 400);
@@ -90,8 +98,8 @@ class StudentRepository {
     return await Student.findByIdAndUpdate(studentId, dto, { new: true });
   }
 
-  public async delete(studentId: string): Promise<void> {
-    await Student.deleteOne({ id: studentId });
-  }
+  // public async delete(studentId: string): Promise<void> {
+  //   await Student.deleteOne({ id: studentId });
+  // }
 }
 export const studentRepository = new StudentRepository();

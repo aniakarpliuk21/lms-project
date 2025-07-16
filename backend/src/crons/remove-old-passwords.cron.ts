@@ -7,10 +7,9 @@ const handler = async () => {
   try {
     const date = timeHelper.subtractCurrentByParams(180, "days");
 
-    const count = await oldPasswordRepository.deleteManyByParams({
+    await oldPasswordRepository.deleteManyByParams({
       createdAt: { $lt: date },
     });
-    console.log(`Deleted ${count} old passwords`);
   } catch (e) {
     console.error(e.message);
   }

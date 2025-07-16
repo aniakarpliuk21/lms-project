@@ -6,4 +6,4 @@ export interface IComment {
   createdAt: Date;
 }
 
-export type ICommentCreateDto = Pick<IComment, "commentBody" | "studentId">
+// export type ICommentCreateDto = Pick<IComment, "commentBody" | "studentId">;

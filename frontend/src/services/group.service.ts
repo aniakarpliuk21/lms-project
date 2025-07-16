@@ -14,7 +14,6 @@ const groupService = {
             body: JSON.stringify({name})
         }
         return (await myInterceptors(url, options).then(value => value.json()));
-
     },
     getAllGroup: async ():Promise<IGroup[]> => {
         const url = urlBuilder.getAllGroupUrl();
@@ -26,18 +25,6 @@ const groupService = {
         }
         return (await myInterceptors(url, options).then(value => value.json()));
     },
-    updateGroup: async (groupId:string,studentId:string):Promise<IGroup> => {
-        const url = urlBuilder.updateGroupUrl() + `/${groupId}`;
-        const options: RequestInit = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({studentId})
-        }
-        return (await myInterceptors(url, options).then(value => value.json()));
-    }
-
 }
 export {
     groupService

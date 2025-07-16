@@ -9,9 +9,7 @@ const handler = async () => {
     const string = configure.jwtRefreshExpiresIn;
     const { value, unit } = timeHelper.parseConfigString(string);
     const date = timeHelper.subtractCurrentByParams(value, unit);
-
-    const count = await tokenRepository.deleteBeforeDate(date);
-    console.log(`Deleted ${count} old tokens`);
+    await tokenRepository.deleteBeforeDate(date);
   } catch (e) {
     console.error(e.message);
   }

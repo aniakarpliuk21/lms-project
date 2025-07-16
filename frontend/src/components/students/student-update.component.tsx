@@ -1,28 +1,54 @@
 "use client"
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {IStudent, IStudentUpdate} from "@/models/IStudent";
 import {useForm} from "react-hook-form";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {groupSliceActions} from "@/redux/slices/groupSlice/groupSlice";
 import {studentSliceActions} from "@/redux/slices/studentSlice/studentSlice";
+import {joiResolver} from "@hookform/resolvers/joi";
+import {studentValidator} from "@/validators/student.validator";
 interface IProps {
     student: IStudent;
     onClose: () => void;
     onUpdateSuccess?: () => void;
 }
 const StudentUpdateComponent:FC<IProps> = ({student,onClose,onUpdateSuccess}) => {
-    const {handleSubmit, register, setValue,formState:{errors}} = useForm<IStudentUpdate>({});
+    const {handleSubmit, register, setValue,reset,formState:{errors}} = useForm<IStudentUpdate>(
+        {mode:"all",
+            resolver:joiResolver(studentValidator.updateStudent)});
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [newGroupName, setNewGroupName] = useState('');
     const [createGroup,setCreateGroup] = useState(false);
     const dispatch = useAppDispatch();
     const groups = useAppSelector(state => state.groupStore.groups);
+    useEffect(() => {
+        if (student) {
+            reset({
+                name: student.name || "",
+                surname: student.surname || "",
+                email: student.email || "",
+                phone: student.phone || "",
+                course: student.course || "",
+                course_format: student.course_format || "",
+                age: student.age || 0,
+                status: student.status || "",
+                sum: student.sum || 0,
+                alreadyPaid: student.alreadyPaid || 0,
+                group: student.group || "",
+                course_type: student.course_type || "",
+            });
+        }
+    }, [student, reset]);
     const updateStudentHandler = async (formData: IStudentUpdate) => {
         try {
             const studentId = student._id;
             const dto = Object.fromEntries(
-                Object.entries(formData).filter(([, value]) => typeof value === 'string' ? value.trim() !== "" : value != null)
+                Object.entries(formData).filter(([_, value]) =>
+                    typeof value === "string"
+                        ? value.trim() !== ""
+                        : value !== null && value !== undefined
+                )
             );
            dispatch(studentSliceActions.updateStudent({studentId, dto}));
             onClose();

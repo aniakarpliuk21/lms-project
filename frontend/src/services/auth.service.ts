@@ -12,7 +12,7 @@ const authService = {
                     body: JSON.stringify(authData),
                 });
                 const data = await response.json();
-                localStorage.setItem('manager', JSON.stringify(data.manager));
+                localStorage.setItem('manager', JSON.stringify(data.responseManager));
                 localStorage.setItem('tokenPair', JSON.stringify(data.tokens));
                 return !!(data?.tokens?.accessToken && data?.tokens?.refreshToken);
         },

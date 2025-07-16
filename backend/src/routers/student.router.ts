@@ -6,12 +6,12 @@ import { commonMiddleware } from "../middlewares/common.middleware";
 import { StudentValidator } from "../validators/student.validator";
 
 const router = Router();
-router.post(
-  "/",
-  authMiddleware.checkAccessToken,
-  commonMiddleware.validateBody(StudentValidator.createStudent),
-  studentController.createStudent,
-);
+// router.post(
+//   "/",
+//   authMiddleware.checkAccessToken,
+//   commonMiddleware.validateBody(StudentValidator.createStudent),
+//   studentController.createStudent,
+// );
 router.get(
   "/statistics",
   authMiddleware.checkAccessToken,
@@ -30,9 +30,9 @@ router.put(
   authMiddleware.checkAccessToken,
   studentController.updateStudent,
 );
-router.delete(
-  "/:studentId",
-  commonMiddleware.isValid("studentId"),
-  studentController.deleteStudent,
-);
+// router.delete(
+//   "/:studentId",
+//   commonMiddleware.isValid("studentId"),
+//   studentController.deleteStudent,
+// );
 export const studentRouter = router;

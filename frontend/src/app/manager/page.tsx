@@ -23,78 +23,86 @@ export default function ManagerPageWrapper() {
 }
 
 const ManagerPage = () => {
+    const dispatch = useAppDispatch();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const dispatch = useAppDispatch();
-    const { total, limit, page: currentPage } = useAppSelector(state => state.studentStore.students);
+
+    const { total, limit, page: currentPage } = useAppSelector((state) => state.studentStore.students);
+    const { filter: appliedFilters } = useAppSelector((state) => state.studentStore);
+
     const pageParam = searchParams?.get("page") || "1";
-    const sortFieldParam = searchParams?.get("sortField") || StudentListOrderEnum.CREATED_AT;
-    const sortOrderParam = searchParams?.get("sortOrder") || OrderEnum.DESC;
-    const [prevSortField, setPrevSortField] = useState<string | null>(null);
-    const [prevSortOrder, setPrevSortOrder] = useState<string | null>(null);
-    const [prevPage, setPrevPage] = useState<number | null>(null);
+    const sortFieldParam = (searchParams?.get("sortField") || StudentListOrderEnum.CREATED_AT) as StudentListOrderEnum;
+    const sortOrderParam = (searchParams?.get("sortOrder") || OrderEnum.DESC) as OrderEnum;
+
     const updateParams = (params: { page?: string; sortField?: string; sortOrder?: string }) => {
         if (!searchParams) return;
         const newParams = new URLSearchParams(searchParams.toString());
-
         if (params.page) newParams.set("page", params.page);
         if (params.sortField) newParams.set("sortField", params.sortField);
         if (params.sortOrder) newParams.set("sortOrder", params.sortOrder);
-
         router.push(`?${newParams.toString()}`);
     };
+
     const refreshStudents = () => {
-        dispatch(studentSliceActions.getAllStudents({
-            page: parseInt(pageParam),
-            sortField: sortFieldParam,
-            sortOrder: sortOrderParam
-        }));
+        dispatch(
+            studentSliceActions.getAllStudents({
+                page: parseInt(pageParam),
+                sortField: sortFieldParam,
+                sortOrder: sortOrderParam,
+                filters: appliedFilters,
+            })
+        );
     };
 
     const onSortChange = (field: StudentListOrderEnum, order: OrderEnum) => {
-        if (field !== sortFieldParam || order !== sortOrderParam) {
-            updateParams({ sortField: field, sortOrder: order, page: "1" });
-        }
+        updateParams({ sortField: field, sortOrder: order, page: "1" });
     };
 
     const onPageChange = (newPage: number) => {
-        if (newPage.toString() !== pageParam) {
-            updateParams({ page: newPage.toString() });
-        }
+        updateParams({ page: newPage.toString() });
     };
 
-    useEffect(() => {
-        const page = parseInt(pageParam);
-        const sortField = sortFieldParam;
-        const sortOrder = sortOrderParam;
+    const [prevPage, setPrevPage] = useState<string | null>(null);
+    const [prevSortField, setPrevSortField] = useState<string | null>(null);
+    const [prevSortOrder, setPrevSortOrder] = useState<string | null>(null);
+    const [prevFilters, setPrevFilters] = useState({});
 
+    useEffect(() => {
         if (
-            page !== prevPage ||
-            sortField !== prevSortField ||
-            sortOrder !== prevSortOrder
+            pageParam !== prevPage ||
+            sortFieldParam !== prevSortField ||
+            sortOrderParam !== prevSortOrder ||
+            JSON.stringify(appliedFilters) !== JSON.stringify(prevFilters)
         ) {
-            dispatch(studentSliceActions.getAllStudents({ page, sortField, sortOrder }));
-            setPrevSortField(sortField);
-            setPrevSortOrder(sortOrder);
-            setPrevPage(page);
+            dispatch(
+                studentSliceActions.getAllStudents({
+                    page: parseInt(pageParam),
+                    sortField: sortFieldParam,
+                    sortOrder: sortOrderParam,
+                    filters: appliedFilters,
+                })
+            );
+            setPrevPage(pageParam);
+            setPrevSortField(sortFieldParam);
+            setPrevSortOrder(sortOrderParam);
+            setPrevFilters(appliedFilters);
         }
-    }, [pageParam,prevPage, sortFieldParam, sortOrderParam, dispatch, prevSortField, prevSortOrder]);
+    }, [pageParam, sortFieldParam, sortOrderParam, appliedFilters, dispatch]);
 
     useEffect(() => {
         dispatch(groupSliceActions.getAllGroups());
         dispatch(managerSliceActions.getMe());
     }, [dispatch]);
+
     return (
         <div className="flex flex-col">
             <MenuComponent />
             <div className="flex-grow px-4 py-3">
-                <div><StudentFilterComponent/></div>
-                <div>
-                    <StudentListComponent
-                        onSortChange={onSortChange}
-                        onUpdateSuccess={refreshStudents}
-                    />
-                </div>
+                <StudentFilterComponent />
+                <StudentListComponent
+                    onSortChange={onSortChange}
+                    onUpdateSuccess={refreshStudents}
+                />
             </div>
             <div className="fixed bottom-0 left-0 w-full bg-white shadow z-50 py-2">
                 <StudentPaginationComponent

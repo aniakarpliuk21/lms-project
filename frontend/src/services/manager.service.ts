@@ -29,16 +29,6 @@ const managerService = {
         };
         return (await myInterceptors(url, options).then(value => value.json()));
     },
-    getManagerById : async(managerId:string): Promise<IManager> => {
-        const url = urlBuilder.getManagerByIdUrl() + `/${managerId}`;
-        const options: RequestInit = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }
-        return (await myInterceptors(url, options).then(value => value.json()));
-    },
     getAllManagers: async (page: number, search: string, limit: number, order: OrderEnum, orderBy: ManagerListOrderEnum): Promise<ManagerResponseType> => {
         let url = urlBuilder.getAllManagerUrl() + `?orderBy=${orderBy}&order=${order}&limit=${limit}&page=${page}`;
 

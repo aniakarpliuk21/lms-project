@@ -5,10 +5,10 @@ import {StudentResponseType} from "@/models/StudentResponceType";
 import {IStudent, IStudentListQuery, IStudentStatisticsResponse} from "@/models/IStudent";
 
 const studentService = {
-    getAllStudents: async (page: number,
-                           sortField: string,
-                           sortOrder: string,
-                           filters?: Partial<IStudentListQuery>
+    getAllStudents: async ( page: number,
+                            sortField: string,
+                            sortOrder: string,
+                            filters?: Partial<IStudentListQuery>
     ): Promise<StudentResponseType> => {
         const url = new URL(urlBuilder.getAllStudentUrl());
         url.searchParams.append("limit", "25");
@@ -18,19 +18,18 @@ const studentService = {
         if (filters) {
             Object.entries(filters).forEach(([key, value]) => {
                 if (value !== undefined && value !== null && value !== '') {
-                    if (key === 'managerOnly' && value === 'true') {
-                        const managerId = localStorage.getItem("managerId");
+                    if (key === "managerOnly" && (value === true || value === "true")) {
+                        const managerId = localStorage.getItem("managerId")?.trim();
                         if (managerId) {
                             url.searchParams.append("managerOnly", "true");
                             url.searchParams.append("currentManagerId", managerId);
                         }
-                    } else {
+                    } else if (key !== "managerOnly") {
                         url.searchParams.append(key, value.toString());
                     }
                 }
             });
         }
-
         const options: RequestInit = {
             method: "GET",
             headers: {

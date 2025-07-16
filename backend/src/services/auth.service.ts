@@ -8,12 +8,13 @@ import {
   IChangePassword,
   IForgotPassword,
   IForgotPasswordSet,
-  IManager,
   IManagerCreateDto,
   IManagerLoginDto,
+  IManagerToResponse,
 } from "../interfaces/manager.interface";
 import { IPasswordCreateDto } from "../interfaces/password.interface";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
+import { managerPresenter } from "../presenters/manager.presenter";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { managerRepository } from "../repositories/manager.repository";
 import { oldPasswordRepository } from "../repositories/odl-password.repository";
@@ -23,7 +24,9 @@ import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
-  public async registerManager(dto: IManagerCreateDto): Promise<IManager> {
+  public async registerManager(
+    dto: IManagerCreateDto,
+  ): Promise<IManagerToResponse> {
     await authService.isEmailUnique(dto.email);
     const manager = await managerRepository.createManager(dto);
     const actionToken = tokenService.generateActionTokens(
@@ -40,11 +43,11 @@ class AuthService {
       frontUrl: configure.frontUrl,
       actionToken,
     });
-    return manager;
+    return managerPresenter.toResponse(manager);
   }
   public async registerAdmin(
     dto: IAdminCreateDto,
-  ): Promise<{ manager: IManager; tokens: ITokenPair }> {
+  ): Promise<{ responseManager: IManagerToResponse; tokens: ITokenPair }> {
     await authService.isEmailUnique(dto.email);
     const password = await passwordService.hashPassword(dto.password);
     const manager = await managerRepository.createAdmin({ ...dto, password });
@@ -62,17 +65,18 @@ class AuthService {
       _managerId: manager._id,
       token: actionToken,
     });
-    return { manager, tokens };
+    const responseManager = managerPresenter.toResponse(manager);
+    return { responseManager, tokens };
   }
   public async login(
     dto: IManagerLoginDto,
-  ): Promise<{ manager: IManager; tokens: ITokenPair }> {
+  ): Promise<{ responseManager: IManagerToResponse; tokens: ITokenPair }> {
     const manager = await managerRepository.getByEmail(dto.email);
     if (!manager) {
-      throw new ApiError("Manager not found", 404);
+      throw new ApiError("Incorrect email or password", 404);
     }
     if (manager.isBanned) {
-      throw new ApiError("Manager blocked by administrator", 403);
+      throw new ApiError("Incorrect email or password", 403);
     }
     const isPasswordCorrect = await passwordService.comparePassword(
       dto.password,
@@ -86,10 +90,11 @@ class AuthService {
       role: manager.role,
     });
     await tokenRepository.create({ ...tokens, _managerId: manager._id });
-    await managerRepository.updateManager(manager._id, {
+    const updateManager = await managerRepository.updateManager(manager._id, {
       lastVisit: new Date(),
     });
-    return { manager, tokens };
+    const responseManager = managerPresenter.toResponse(updateManager);
+    return { responseManager, tokens };
   }
 
   public async refresh(
@@ -182,7 +187,7 @@ class AuthService {
   public async verify(
     dto: IVerifyToken,
     tokenPayload: ITokenPayload,
-  ): Promise<IManager> {
+  ): Promise<IManagerToResponse> {
     const manager = await managerRepository.updateManager(
       tokenPayload.managerId,
       {
@@ -190,7 +195,7 @@ class AuthService {
       },
     );
     await actionTokenRepository.deleteByParams({ token: dto.token });
-    return manager;
+    return managerPresenter.toResponse(manager);
   }
   public async changePassword(
     dto: IChangePassword,

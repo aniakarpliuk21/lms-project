@@ -48,15 +48,15 @@ export interface IStudentSearch {
     group?: string;
     startDate?: Date;
     endDate?: Date;
-    managerOnly: boolean;
+    managerOnly?: boolean;
 }
 
 export interface IStudentStatistics {
     total: number;
     'In work': number;
     'New': number;
-    'Agree': number;
-    'Disagree': number;
+    'Aggre': number;
+    'Disaggre': number;
     'Dubbing': number;
 }
 export interface IStudentStatisticsResponse {
@@ -75,6 +75,6 @@ export type IStudentListQuery = {
     group?: string;
     order?: 'asc' | 'desc';
     orderBy?: string;
-    managerOnly?: string;
+    managerOnly?: boolean;
     currentManagerId?: string;
 };

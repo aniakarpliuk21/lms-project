@@ -1,4 +1,4 @@
-import {IStudent, IStudentStatistics} from "@/models/IStudent";
+import {IStudent, IStudentListQuery, IStudentSearch, IStudentStatistics} from "@/models/IStudent";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { studentService } from "@/services/student.service";
 import { StudentResponseType } from "@/models/StudentResponceType";
@@ -7,22 +7,12 @@ import { StudentListOrderEnum } from "@/enums/student-list-order.enum";
 
 type StudentSliceType = {
     students: StudentResponseType;
+    filter:Partial<IStudentListQuery>;
     student: IStudent | null;
     studentStatistics: IStudentStatistics | null;
     error: string | null;
     loading: boolean;
 };
-
-type GetAllStudentsArgs = {
-    page: number;
-    sortField: string;
-    sortOrder: string;
-};
-type UpdateStudentArgs = {
-    studentId: string;
-    dto:Partial<IStudent>
-}
-
 const initialState: StudentSliceType = {
     students: {
         total: 0,
@@ -32,22 +22,34 @@ const initialState: StudentSliceType = {
         order: OrderEnum.DESC,
         orderBy: StudentListOrderEnum.CREATED_AT,
     },
+    filter:{},
     student: null,
     studentStatistics: null,
     error: null,
     loading: false,
 };
 
+type GetAllStudentsArgs = {
+    page: number;
+    sortField: string;
+    sortOrder: string;
+    filters?: IStudentSearch;
+};
+type UpdateStudentArgs = {
+    studentId: string;
+    dto:Partial<IStudent>
+}
+
 const getAllStudents = createAsyncThunk(
     "studentSlice/getAllStudents",
     async (args: GetAllStudentsArgs, thunkAPI) => {
         try {
-            const { page, sortField, sortOrder } = args;
-            const response = await studentService.getAllStudents(page, sortField, sortOrder);
+            const { page, sortField, sortOrder, filters } = args;
+            const response = await studentService.getAllStudents(page, sortField, sortOrder, filters );
             return thunkAPI.fulfillWithValue(response);
         } catch (e) {
             console.error("Error fetching students", e);
-            return thunkAPI.rejectWithValue(e);
+            return thunkAPI.rejectWithValue((e as Error).message);
         }
     }
 );
@@ -80,7 +82,18 @@ export const updateStudent = createAsyncThunk(
 export const studentSlice = createSlice({
     name: "studentSlice",
     initialState,
-    reducers: {},
+    reducers: {
+        setStudentFilter(state, action: PayloadAction<Partial<IStudentListQuery>>) {
+            state.filter = action.payload;
+        },
+        setSort(state, action: PayloadAction<{ orderBy: string; order: OrderEnum }>) {
+            state.students.orderBy = action.payload.orderBy;
+            state.students.order = action.payload.order;
+        },
+        setPage(state, action: PayloadAction<number>) {
+            state.students.page = action.payload;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getAllStudents.pending, (state) => {
@@ -92,8 +105,8 @@ export const studentSlice = createSlice({
                 state.students = action.payload;
             })
             .addCase(getAllStudents.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload as string;
+                state.loading = false;
+                state.error = action.payload as string;
             })
             .addCase(updateStudent.pending, (state) => {
                 state.loading = true;

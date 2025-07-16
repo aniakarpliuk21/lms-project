@@ -4,7 +4,6 @@ export interface IManager {
     name: string;
     surname: string;
     email: string;
-    password: string;
     role: string;
     status: string;
     phone?: string;

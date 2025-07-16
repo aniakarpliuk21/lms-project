@@ -10,6 +10,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
     const [forgotPassword, setForgotPassword] = useState<boolean>(false);
     const [banManager, setBanManager] = useState<boolean>(manager.isBanned || false);
     const [unbanManager, setUnbanManager] = useState<boolean>(false);
+    const loggedManager = JSON.parse(localStorage.getItem("manager") || "null");
     const handleRecoveryPassword = async () => {
         try{
             const response = await passwordService.sendForgotPasswordEmail(manager.email)
@@ -61,7 +62,7 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
             console.error("Error unban manager", e);
         }
     }
-
+    const isSelf = loggedManager?._id === manager._id;
     return (
         <div className="border border-lime-700 rounded-md p-3 mb-4 flex justify-between flex-wrap">
         <div>
@@ -91,6 +92,8 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
                         </button>
                     )
                 }
+                {!isSelf && (
+                    <>
                 <button
                     onClick={handleBanManager}
                     disabled={banManager}
@@ -107,6 +110,8 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
                     }`}
                 >UNBAN
                 </button>
+                    </>
+                )}
                 {isEmailSent && (
                     <p className="text-green-600 font-semibold mt-2">Email has been sent successfully!</p>
                 )}

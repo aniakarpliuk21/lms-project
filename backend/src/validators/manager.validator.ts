@@ -61,25 +61,6 @@ export class ManagerValidator {
       "string.required": "Email is a required field",
     }),
   });
-  public static update = Joi.object({
-    password: this.password.optional(),
-    phone: this.phone.optional(),
-  });
-  public static login = Joi.object({
-    email: this.email.required().messages({
-      "string.base": "Email must be a string",
-      "string.empty": "Email cannot be empty",
-      "string.email": "Email must be a valid email address",
-      "string.pattern.base": "Email does not match the required pattern",
-      "string.required": "Email is a required field",
-    }),
-    password: this.password.required().messages({
-      "string.base": "Password must be a string",
-      "string.empty": "Password cannot be empty",
-      "string.pattern.base": "Password does not match the required pattern",
-      "string.required": "Password is a required field",
-    }),
-  });
   public static forgotPassword = Joi.object({
     email: this.email.required().messages({
       "string.base": "Email must be a string",

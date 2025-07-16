@@ -34,11 +34,7 @@ router.get(
   authMiddleware.checkAccessToken,
   authController.getManagerListFull,
 );
-router.post(
-  "/login",
-  commonMiddleware.validateBody(ManagerValidator.login),
-  authController.login,
-);
+router.post("/login", authController.login);
 router.post(
   "/refresh",
   authMiddleware.checkRefreshToken,
@@ -68,12 +64,12 @@ router.put(
   authMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
   authController.forgotPasswordSet,
 );
-router.put(
-  "/password",
-  commonMiddleware.validateBody(ManagerValidator.changePassword),
-  authMiddleware.checkAccessToken,
-  authController.changePassword,
-);
+// router.put(
+//   "/password",
+//   commonMiddleware.validateBody(ManagerValidator.changePassword),
+//   authMiddleware.checkAccessToken,
+//   authController.changePassword,
+// );
 router.post(
   "/verify",
   commonMiddleware.validateBody(AuthValidator.verify),
@@ -99,10 +95,10 @@ router.post(
   commonMiddleware.isAdmin,
   authController.unbanManager,
 );
-router.get(
-  "/manager/:managerId",
-  authMiddleware.checkAccessToken,
-  commonMiddleware.isValid("managerId"),
-  authController.getManagerById,
-);
+// router.get(
+//   "/manager/:managerId",
+//   authMiddleware.checkAccessToken,
+//   commonMiddleware.isValid("managerId"),
+//   authController.getManagerById,
+// );
 export const authRouter = router;

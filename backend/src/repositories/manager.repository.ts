@@ -43,14 +43,6 @@ class ManagerRepository {
   public async createManager(dto: IManagerCreateDto): Promise<IManager> {
     return await Manager.create(dto);
   }
-
-  public async delete(userId: string): Promise<void> {
-    await Manager.deleteOne({ id: userId });
-  }
-  public async deleteOneByEmail(email: string): Promise<void> {
-    await Manager.deleteOne({ email });
-  }
-
   public async getManagerById(managerId: string): Promise<IManager> {
     return await Manager.findById(managerId);
   }

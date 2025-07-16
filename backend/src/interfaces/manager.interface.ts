@@ -9,7 +9,7 @@ export interface IManager {
   name: string;
   surname: string;
   email: string;
-  password?: string;
+  password: string;
   role: RoleEnum;
   status: ManagerStatusEnum;
   phone?: string;
@@ -20,6 +20,23 @@ export interface IManager {
   updatedAt: Date;
   lastVisit: Date | null;
 }
+export type IManagerToResponse = Pick<
+  IManager,
+  | "_id"
+  | "id"
+  | "name"
+  | "surname"
+  | "email"
+  | "role"
+  | "status"
+  | "phone"
+  | "isDeleted"
+  | "isVerified"
+  | "isBanned"
+  | "createdAt"
+  | "updatedAt"
+  | "lastVisit"
+>;
 
 export type IManagerCreateDto = Pick<IManager, "name" | "surname" | "email">;
 export type IAdminCreateDto = Pick<
@@ -44,6 +61,6 @@ export type IManagerListQuery = {
 };
 
 export interface IManagerListResponse extends IManagerListQuery {
-  data: IManager[];
+  data: IManagerToResponse[];
   total: number;
 }

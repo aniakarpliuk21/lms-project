@@ -29,20 +29,20 @@ export interface IStudent {
   updatedAt: Date;
 }
 
-export type IStunentCreateDto = Pick<
-  IStudent,
-  | "name"
-  | "surname"
-  | "email"
-  | "phone"
-  | "age"
-  | "course"
-  | "course_format"
-  | "course_type"
-  | "status"
-  | "sum"
-  | "alreadyPaid"
->;
+// export type IStudentCreateDto = Pick<
+//   IStudent,
+//   | "name"
+//   | "surname"
+//   | "email"
+//   | "phone"
+//   | "age"
+//   | "course"
+//   | "course_format"
+//   | "course_type"
+//   | "status"
+//   | "sum"
+//   | "alreadyPaid"
+// >;
 export type IStudentUpdateDto = Partial<IStudent>;
 
 export type IStudentListQuery = {
@@ -61,8 +61,9 @@ export type IStudentListQuery = {
   surname?: string;
   email?: string;
   phone?: string;
-  managerOnly?: string;
   currentManagerId?: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 export interface IStudentListResponse extends IStudentListQuery {
