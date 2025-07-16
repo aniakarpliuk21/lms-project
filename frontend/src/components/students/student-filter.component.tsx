@@ -3,13 +3,13 @@ import React, {useCallback, useEffect} from 'react';
 import Image from "next/image";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {useForm} from "react-hook-form";
-import {IStudentSearch} from "@/models/IStudent";
+import {IStudent, IStudentSearch} from "@/models/IStudent";
 import debounce from "lodash.debounce";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {studentSliceActions} from "@/redux/slices/studentSlice/studentSlice";
 import {useRouter} from "next/navigation";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 const StudentFilterComponent = () => {
     const dispatch = useAppDispatch();
@@ -72,15 +72,37 @@ const StudentFilterComponent = () => {
         dispatch(studentSliceActions.setPage(1));
     };
 
-    const handleCreateExelTable = () => {
-        const worksheet = XLSX.utils.json_to_sheet(students);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+    const handleCreateExcelTable = async (students: IStudent[]) => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Students");
 
-        const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-        const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+        worksheet.columns = [
+            { header: "Name", key: "name", width: 20 },
+            { header: "Surname", key: "surname", width: 20 },
+            { header: "Email", key: "email", width: 30 },
+            { header: "Phone", key: "phone", width: 20 },
+            { header: "Course", key: "course", width: 15 },
+            { header: "Course Format", key: "course_format", width: 15 },
+            { header: "Course Type", key: "course_type", width: 15 },
+            { header: "Group", key: "group", width: 15 },
+            { header: "Age", key: "age", width: 10 },
+            { header: "Sum", key: "sum", width: 10 },
+            { header: "Already Paid", key: "alreadyPaid", width: 15 },
+            { header: "Status", key: "status", width: 15 },
+        ];
+
+        students.forEach((student) => {
+            worksheet.addRow(student);
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
         saveAs(blob, "students.xlsx");
     };
+
     return (
         <form>
             <div className="flex m-2">
@@ -198,7 +220,7 @@ const StudentFilterComponent = () => {
                     </button>
                     <button
                         type="button"
-                        onClick={handleCreateExelTable}
+                        onClick={() => handleCreateExcelTable(students)}
                         className="bg-lime-600 m-1 w-8 h-8">
                         <Image src="/images/image7.png" alt="prev" width={10} height={10} className="w-6 h-6"/>
                     </button>
