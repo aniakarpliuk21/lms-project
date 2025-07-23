@@ -4,7 +4,6 @@ import { ApiError } from "../errors/api-error";
 import { IVerifyToken } from "../interfaces/action-token.interface";
 import {
   IAdminCreateDto,
-  IChangePassword,
   IForgotPassword,
   IForgotPasswordSet,
   IManagerCreateDto,
@@ -162,16 +161,16 @@ class AuthController {
       next(e);
     }
   }
-  public async changePassword(req: Request, res: Response, next: NextFunction) {
-    try {
-      const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
-      const dto = req.body as IChangePassword;
-      await authService.changePassword(dto, tokenPayload);
-      res.sendStatus(204);
-    } catch (e) {
-      next(e);
-    }
-  }
+  // public async changePassword(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
+  //     const dto = req.body as IChangePassword;
+  //     await authService.changePassword(dto, tokenPayload);
+  //     res.sendStatus(204);
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
   public async sendActivateEmail(
     req: Request,
     res: Response,

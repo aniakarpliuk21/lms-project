@@ -19,10 +19,10 @@ export class ManagerService {
     }
     return managerPresenter.toResponse(manager);
   }
-  public async getManagerById(managerId: string): Promise<IManagerToResponse> {
-    const manager = await managerRepository.getManagerById(managerId);
-    return managerPresenter.toResponse(manager);
-  }
+  // public async getManagerById(managerId: string): Promise<IManagerToResponse> {
+  //   const manager = await managerRepository.getManagerById(managerId);
+  //   return managerPresenter.toResponse(manager);
+  // }
   public async getManagerList(
     query: IManagerListQuery,
   ): Promise<IManagerListResponse> {

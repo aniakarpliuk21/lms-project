@@ -31,17 +31,17 @@ export class StudentValidator {
   private static sum = Joi.number();
   private static alreadyPaid = Joi.number();
   private static group = Joi.string().trim();
-  public static createStudent = Joi.object({
-    name: this.name.required(),
-    surname: this.surname.required(),
-    email: this.emailStrict.required(),
-    phone: this.phone.required(),
-    age: this.age.required(),
-    course: this.course.required(),
-    course_format: this.course_format.required(),
-    course_type: this.course_type.required(),
-    status: this.status.required(),
-  });
+  // public static createStudent = Joi.object({
+  //   name: this.name.required(),
+  //   surname: this.surname.required(),
+  //   email: this.emailStrict.required(),
+  //   phone: this.phone.required(),
+  //   age: this.age.required(),
+  //   course: this.course.required(),
+  //   course_format: this.course_format.required(),
+  //   course_type: this.course_type.required(),
+  //   status: this.status.required(),
+  // });
 
   public static updateStudent = Joi.object({
     name: this.name.optional().empty(""),

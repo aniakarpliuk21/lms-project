@@ -36,7 +36,7 @@ const urlBuilder = {
     forgotPasswordUrl:() => backendBaseUrl + urlBuilder.authBaseUrl + urlBuilder.forgotPassword,
     banManagerUrl:() => backendBaseUrl + urlBuilder.authBaseUrl + urlBuilder.banManager,
     unbanManagerUrl:() => backendBaseUrl + urlBuilder.authBaseUrl + urlBuilder.unbanManager,
-    getManagerByIdUrl:() => backendBaseUrl + urlBuilder.authBaseUrl + urlBuilder.manager,
+    // getManagerByIdUrl:() => backendBaseUrl + urlBuilder.authBaseUrl + urlBuilder.manager,
     getAllStudentUrl:() => backendBaseUrl + urlBuilder.studentsBaseUrl,
     getAllStudentsWithoutPaginationUrl:() => backendBaseUrl + urlBuilder.studentsBaseUrl + urlBuilder.getAllStudentsWithoutPagination,
     getStudentStatisticsUrl:() => backendBaseUrl + urlBuilder.studentsBaseUrl +urlBuilder.studentStatistics,
@@ -45,7 +45,7 @@ const urlBuilder = {
     updateStudentUrl:() => backendBaseUrl + urlBuilder.studentsBaseUrl,
     createGroupUrl:() => backendBaseUrl + urlBuilder.groupsBaseUrl + urlBuilder.createGroup,
     getAllGroupUrl:() => backendBaseUrl + urlBuilder.groupsBaseUrl,
-    updateGroupUrl:() => backendBaseUrl + urlBuilder.groupsBaseUrl,
+    // updateGroupUrl:() => backendBaseUrl + urlBuilder.groupsBaseUrl,
 }
 export {
     backendBaseUrl,

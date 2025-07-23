@@ -79,10 +79,10 @@ export class ManagerValidator {
     }),
     token: Joi.string(),
   });
-  public static changePassword = Joi.object({
-    newPassword: this.password.required(),
-    oldPassword: this.password.required(),
-  });
+  // public static changePassword = Joi.object({
+  //   newPassword: this.password.required(),
+  //   oldPassword: this.password.required(),
+  // });
   public static addPassword = Joi.object({
     password: this.password.required().messages({
       "string.base": "Password must be a string",

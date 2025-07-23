@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import Image from "next/image";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {useForm} from "react-hook-form";
-import {IStudent, IStudentSearch} from "@/models/IStudent";
+import {IStudent, IStudentListQuery, IStudentSearch} from "@/models/IStudent";
 import debounce from "lodash.debounce";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {studentSliceActions} from "@/redux/slices/studentSlice/studentSlice";
@@ -16,6 +16,34 @@ const StudentFilterComponent = () => {
     const router = useRouter();
     const {groups, loading} = useAppSelector(state => state.groupStore);
     const { register, watch, reset, getValues } = useForm<IStudentSearch>({ mode: "onChange" });
+    const prepareFilteredObject = (values: IStudentSearch): Partial<IStudentListQuery> => {
+        const manager = localStorage.getItem("manager");
+        let managerId: string | null = null;
+
+        if (manager) {
+            try {
+                const managerData = JSON.parse(manager);
+                managerId = managerData._id || null;
+            } catch (error) {
+                console.error("Failed to parse manager from localStorage", error);
+            }
+        }
+
+        const filtered = Object.fromEntries(
+            Object.entries(values)
+                .filter(([, v]) => v !== "" && v !== undefined && v !== null)
+                .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])
+        );
+
+        if (filtered.managerOnly === true || filtered.managerOnly === "true") {
+            if (managerId) filtered.currentManagerId = managerId;
+        } else {
+            delete filtered.currentManagerId;
+        }
+
+        delete filtered.managerOnly;
+        return filtered;
+    };
     const updateQueryParamsWithFilters = (filters: IStudentSearch) => {
         const params = new URLSearchParams();
         for (const [key, value] of Object.entries(filters)) {
@@ -26,31 +54,11 @@ const StudentFilterComponent = () => {
         router.push(`?${params.toString()}`);
     };
     const debouncedFilter = debounce((values: IStudentSearch) => {
-            const manager = localStorage.getItem("manager");
-            let managerId: string | null = null;
-            if (manager) {
-                try {
-                    const managerData = JSON.parse(manager);
-                    managerId = managerData._id || null;
-                } catch (error) {
-                    console.error("Failed to parse manager from localStorage", error);
-                }
-            }
-            const filtered = Object.fromEntries(
-                Object.entries(values)
-                    .filter(([, v]) => v !== "" && v !== undefined && v !== null)
-                    .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])
-            );
-            if (filtered.managerOnly === true || filtered.managerOnly === "true") {
-                if (managerId) filtered.currentManagerId = managerId;
-            } else {
-                delete filtered.currentManagerId;
-            }
-            updateQueryParamsWithFilters(filtered);
-            delete filtered.managerOnly;
-            dispatch(studentSliceActions.setStudentFilter(filtered));
-            dispatch(studentSliceActions.setPage(1));
-        }, 500);
+        const filtered = prepareFilteredObject(values);
+        updateQueryParamsWithFilters(filtered as IStudentSearch);
+        dispatch(studentSliceActions.setStudentFilter(filtered));
+        dispatch(studentSliceActions.setPage(1));
+    }, 500);
     useEffect(() => {
         const subscription = watch((values) => {
             debouncedFilter(values);
@@ -99,35 +107,12 @@ const StudentFilterComponent = () => {
     };
     const handleCreateExcel = async () => {
         const values = getValues();
-        const manager = localStorage.getItem("manager");
-        let managerId: string | null = null;
-
-        if (manager) {
-            try {
-                const parsed = JSON.parse(manager);
-                managerId = parsed._id || null;
-            } catch (e) {
-                console.error(" Don't parse manager for localStorage:", e);
-            }
-        }
-
-        const filtered = Object.fromEntries(
-            Object.entries(values)
-                .filter(([, v]) => v !== "" && v !== undefined && v !== null)
-                .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])
-        );
-
-        if (filtered.managerOnly === true || filtered.managerOnly === "true") {
-            if (managerId) filtered.currentManagerId = managerId;
-        } else {
-            delete filtered.currentManagerId;
-        }
-        delete filtered.managerOnly;
+        const filtered = prepareFilteredObject(values);
 
         const result = await dispatch(studentSliceActions.getAllStudentsWithoutPagination({
             sortField: "createdAt",
             sortOrder: "desc",
-            filters: filtered
+            filters: filtered,
         }));
 
         if (studentSliceActions.getAllStudentsWithoutPagination.fulfilled.match(result)) {

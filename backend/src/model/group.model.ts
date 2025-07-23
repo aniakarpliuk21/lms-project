@@ -6,7 +6,14 @@ import { Student } from "./student.model";
 const groupSchema = new Schema(
   {
     name: { type: String, required: true },
-    students: [{ type: Schema.Types.ObjectId, required: true, ref: Student, default: [] }],
+    students: [
+      {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: Student,
+        default: [],
+      },
+    ],
   },
   { timestamps: true, versionKey: false },
 );

@@ -14,10 +14,7 @@ const passwordService = {
            },
            body: JSON.stringify({managerId, password }),
        })
-        if (response.status === 204) {
-            return true;
-        }
-        return false;
+        return response.status === 204;
     },
     sendForgotPasswordEmail: async (email: string): Promise<boolean> => {
         const url = urlBuilder.forgotPasswordUrl();
@@ -29,10 +26,7 @@ const passwordService = {
             body: JSON.stringify({email})
         }
         const response = await myInterceptors(url, options);
-        if (response.status === 204) {
-            return true;
-        }
-        return false;
+        return response.status === 204;
     },
     forgotPasswordSet: async (dto:IForgotPasswordSet): Promise<boolean> => {
         const response = await myInterceptors(urlBuilder.forgotPasswordUrl(), {
@@ -42,10 +36,7 @@ const passwordService = {
             },
             body: JSON.stringify(dto)
         });
-        if (response.status === 204) {
-            return true;
-        }
-        return false;
+        return response.status === 204;
     }
 }
 export { passwordService }

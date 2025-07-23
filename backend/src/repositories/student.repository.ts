@@ -16,91 +16,65 @@ type StatusAggregationResult = {
   count: number;
 };
 class StudentRepository {
+  private buildFilter(query: IStudentListQuery): FilterQuery<IStudent> {
+    const filter: FilterQuery<IStudent> = {};
+
+    if (query.course) filter.course = query.course;
+    if (query.course_type) filter.course_type = query.course_type;
+    if (query.course_format) filter.course_format = query.course_format;
+    if (query.status) filter.status = query.status;
+    if (query.manager) filter.manager = query.manager;
+    if (query.group) filter.group = query.group;
+    if (query.age) filter.age = query.age;
+    if (query.name) filter.name = { $regex: query.name, $options: "i" };
+    if (query.surname)
+      filter.surname = { $regex: query.surname, $options: "i" };
+    if (query.email) filter.email = { $regex: query.email, $options: "i" };
+    if (query.phone) filter.phone = { $regex: query.phone, $options: "i" };
+    if (query.currentManagerId) filter._managerId = query.currentManagerId;
+
+    if (query.startDate || query.endDate) {
+      filter.createdAt = {};
+      if (query.startDate) filter.createdAt.$gte = new Date(query.startDate);
+      if (query.endDate) filter.createdAt.$lte = new Date(query.endDate);
+    }
+
+    return filter;
+  }
+  private buildSort(query: IStudentListQuery): { [key: string]: SortOrder } {
+    const allowedFields = Object.values(StudentListOrderEnum);
+    if (!allowedFields.includes(query.orderBy)) {
+      throw new ApiError("Invalid order by", 400);
+    }
+
+    return {
+      [query.orderBy]: query.order,
+    };
+  }
   // public async createStudent(dto: IStudentCreateDto): Promise<IStudent> {
   //   return await Student.create(dto);
   // }
   public async getStudentList(
     query: IStudentListQuery,
   ): Promise<{ entities: IStudent[]; total: number }> {
-    const filterObj: FilterQuery<IStudent> = {};
-    if (query.course) filterObj.course = query.course;
-    if (query.course_type) filterObj.course_type = query.course_type;
-    if (query.course_format) filterObj.course_format = query.course_format;
-    if (query.status) filterObj.status = query.status;
-    if (query.manager) filterObj.manager = query.manager;
-    if (query.group) filterObj.group = query.group;
-    if (query.age) filterObj.age = query.age;
-    if (query.name) filterObj.name = { $regex: query.name, $options: "i" };
-    if (query.surname)
-      filterObj.surname = { $regex: query.surname, $options: "i" };
-    if (query.email) filterObj.email = { $regex: query.email, $options: "i" };
-    if (query.phone) filterObj.phone = { $regex: query.phone, $options: "i" };
-    if (query.currentManagerId) {
-      filterObj._managerId = query.currentManagerId;
-    }
-    if (query.startDate || query.endDate) {
-      filterObj.createdAt = {};
-      if (query.startDate) {
-        filterObj.createdAt.$gte = new Date(query.startDate);
-      }
-      if (query.endDate) {
-        filterObj.createdAt.$lte = new Date(query.endDate);
-      }
-    }
+    const filterObj = this.buildFilter(query);
+    const sortObj = this.buildSort(query);
     const limit = query.limit || 25;
     const skip = limit === 0 ? 0 : limit * (query.page - 1);
-    const allowedFields = Object.values(StudentListOrderEnum);
-    if (!allowedFields.includes(query.orderBy)) {
-      throw new ApiError("Invalid order by", 400);
-    }
-    const sortObj: { [key: string]: SortOrder } = {
-      [query.orderBy]: query.order,
-    };
     const [entities, total] = await Promise.all([
       Student.find(filterObj).sort(sortObj).limit(limit).skip(skip),
       Student.countDocuments(filterObj),
     ]);
+
     return { entities, total };
   }
   public async getStudentListWithoutPagination(
     query: IStudentListQuery,
   ): Promise<{ entities: IStudent[] }> {
-    const filterObj: FilterQuery<IStudent> = {};
-    if (query.course) filterObj.course = query.course;
-    if (query.course_type) filterObj.course_type = query.course_type;
-    if (query.course_format) filterObj.course_format = query.course_format;
-    if (query.status) filterObj.status = query.status;
-    if (query.manager) filterObj.manager = query.manager;
-    if (query.group) filterObj.group = query.group;
-    if (query.age) filterObj.age = query.age;
-    if (query.name) filterObj.name = { $regex: query.name, $options: "i" };
-    if (query.surname)
-      filterObj.surname = { $regex: query.surname, $options: "i" };
-    if (query.email) filterObj.email = { $regex: query.email, $options: "i" };
-    if (query.phone) filterObj.phone = { $regex: query.phone, $options: "i" };
-    if (query.currentManagerId) {
-      filterObj._managerId = query.currentManagerId;
-    }
-    if (query.startDate || query.endDate) {
-      filterObj.createdAt = {};
-      if (query.startDate) {
-        filterObj.createdAt.$gte = new Date(query.startDate);
-      }
-      if (query.endDate) {
-        filterObj.createdAt.$lte = new Date(query.endDate);
-      }
-    }
-    const allowedFields = Object.values(StudentListOrderEnum);
-    if (!allowedFields.includes(query.orderBy)) {
-      throw new ApiError("Invalid order by", 400);
-    }
-    const sortObj: { [key: string]: SortOrder } = {
-      [query.orderBy]: query.order,
-    };
-    const [entities] = await Promise.all([
-      Student.find(filterObj).sort(sortObj),
-      Student.countDocuments(filterObj),
-    ]);
+    const filterObj = this.buildFilter(query);
+    const sortObj = this.buildSort(query);
+
+    const entities = await Student.find(filterObj).sort(sortObj);
     return { entities };
   }
   public async getStudentStatistics(

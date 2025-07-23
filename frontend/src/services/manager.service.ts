@@ -68,10 +68,7 @@ const managerService = {
             body: JSON.stringify({email})
         }
         const response = await myInterceptors(url, options);
-        if (response.status === 204) {
-            return true;
-        }
-        return false;
+        return response.status === 204;
     },
     banManager: async (managerId:string): Promise<boolean> => {
         const url = urlBuilder.banManagerUrl();
@@ -83,10 +80,7 @@ const managerService = {
             body: JSON.stringify({managerId})
         }
         const response = await myInterceptors(url, options);
-        if (response.status === 204) {
-            return true;
-        }
-        return false;
+        return response.status === 204;
     },
     unbanManager: async (managerId:string): Promise<boolean> => {
         const url = urlBuilder.unbanManagerUrl();
@@ -98,10 +92,7 @@ const managerService = {
             body: JSON.stringify({managerId})
         }
         const response = await myInterceptors(url, options);
-        if (response.status === 204) {
-            return true;
-        }
-        return false;
+        return response.status === 204;
     }
 }
 export {

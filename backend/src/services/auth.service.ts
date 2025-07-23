@@ -5,7 +5,6 @@ import { ApiError } from "../errors/api-error";
 import { IVerifyToken } from "../interfaces/action-token.interface";
 import {
   IAdminCreateDto,
-  IChangePassword,
   IForgotPassword,
   IForgotPasswordSet,
   IManagerCreateDto,
@@ -17,7 +16,6 @@ import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
 import { managerPresenter } from "../presenters/manager.presenter";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { managerRepository } from "../repositories/manager.repository";
-import { oldPasswordRepository } from "../repositories/odl-password.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
@@ -197,51 +195,51 @@ class AuthService {
     await actionTokenRepository.deleteByParams({ token: dto.token });
     return managerPresenter.toResponse(manager);
   }
-  public async changePassword(
-    dto: IChangePassword,
-    tokenPayload: ITokenPayload,
-  ): Promise<void> {
-    const manager = await managerRepository.getManagerById(
-      tokenPayload.managerId,
-    );
-    const oldPasswords = await oldPasswordRepository.getListByManagerId(
-      tokenPayload.managerId,
-    );
-    const isPasswordCorrect = await passwordService.comparePassword(
-      dto.oldPassword,
-      manager.password,
-    );
-    if (!isPasswordCorrect) {
-      throw new ApiError("Incorrect password", 401);
-    }
-    await Promise.all(
-      [...oldPasswords, { password: manager.password }].map(
-        async (oldPassword) => {
-          const isPrev = await passwordService.comparePassword(
-            dto.newPassword,
-            oldPassword.password,
-          );
-          if (isPrev) {
-            throw new ApiError(
-              "Password can't be the same as the previous one",
-              409,
-            );
-          }
-        },
-      ),
-    );
-    const password = await passwordService.hashPassword(dto.newPassword);
-    await managerRepository.updateManager(tokenPayload.managerId, {
-      password,
-    });
-    await tokenRepository.deleteAllByParams({
-      _managerId: tokenPayload.managerId,
-    });
-    await oldPasswordRepository.create({
-      _managerId: manager._id,
-      password: manager.password,
-    });
-  }
+  // public async changePassword(
+  //   dto: IChangePassword,
+  //   tokenPayload: ITokenPayload,
+  // ): Promise<void> {
+  //   const manager = await managerRepository.getManagerById(
+  //     tokenPayload.managerId,
+  //   );
+  //   const oldPasswords = await oldPasswordRepository.getListByManagerId(
+  //     tokenPayload.managerId,
+  //   );
+  //   const isPasswordCorrect = await passwordService.comparePassword(
+  //     dto.oldPassword,
+  //     manager.password,
+  //   );
+  //   if (!isPasswordCorrect) {
+  //     throw new ApiError("Incorrect password", 401);
+  //   }
+  //   await Promise.all(
+  //     [...oldPasswords, { password: manager.password }].map(
+  //       async (oldPassword) => {
+  //         const isPrev = await passwordService.comparePassword(
+  //           dto.newPassword,
+  //           oldPassword.password,
+  //         );
+  //         if (isPrev) {
+  //           throw new ApiError(
+  //             "Password can't be the same as the previous one",
+  //             409,
+  //           );
+  //         }
+  //       },
+  //     ),
+  //   );
+  //   const password = await passwordService.hashPassword(dto.newPassword);
+  //   await managerRepository.updateManager(tokenPayload.managerId, {
+  //     password,
+  //   });
+  //   await tokenRepository.deleteAllByParams({
+  //     _managerId: tokenPayload.managerId,
+  //   });
+  //   await oldPasswordRepository.create({
+  //     _managerId: manager._id,
+  //     password: manager.password,
+  //   });
+  // }
   public async isEmailUnique(email: string): Promise<void> {
     const manager = await managerRepository.getByEmail(email);
     if (manager) {
