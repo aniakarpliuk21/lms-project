@@ -1,4 +1,4 @@
-import { FilterQuery, SortOrder } from "mongoose";
+import { FilterQuery, SortOrder, Types } from "mongoose";
 
 import { StudentStatusEnum } from "../enums/student.enum";
 import { StudentListOrderEnum } from "../enums/student-list-order.enum";
@@ -11,6 +11,10 @@ import {
 } from "../interfaces/student.interface";
 import { Student } from "../model/student.model";
 
+type StatusAggregationResult = {
+  _id: string;
+  count: number;
+};
 class StudentRepository {
   // public async createStudent(dto: IStudentCreateDto): Promise<IStudent> {
   //   return await Student.create(dto);
@@ -58,8 +62,58 @@ class StudentRepository {
     ]);
     return { entities, total };
   }
-  public async getStudentStatistics(): Promise<IStudentStatistics> {
-    const statistics = await Student.aggregate([
+  public async getStudentListWithoutPagination(
+    query: IStudentListQuery,
+  ): Promise<{ entities: IStudent[] }> {
+    const filterObj: FilterQuery<IStudent> = {};
+    if (query.course) filterObj.course = query.course;
+    if (query.course_type) filterObj.course_type = query.course_type;
+    if (query.course_format) filterObj.course_format = query.course_format;
+    if (query.status) filterObj.status = query.status;
+    if (query.manager) filterObj.manager = query.manager;
+    if (query.group) filterObj.group = query.group;
+    if (query.age) filterObj.age = query.age;
+    if (query.name) filterObj.name = { $regex: query.name, $options: "i" };
+    if (query.surname)
+      filterObj.surname = { $regex: query.surname, $options: "i" };
+    if (query.email) filterObj.email = { $regex: query.email, $options: "i" };
+    if (query.phone) filterObj.phone = { $regex: query.phone, $options: "i" };
+    if (query.currentManagerId) {
+      filterObj._managerId = query.currentManagerId;
+    }
+    if (query.startDate || query.endDate) {
+      filterObj.createdAt = {};
+      if (query.startDate) {
+        filterObj.createdAt.$gte = new Date(query.startDate);
+      }
+      if (query.endDate) {
+        filterObj.createdAt.$lte = new Date(query.endDate);
+      }
+    }
+    const allowedFields = Object.values(StudentListOrderEnum);
+    if (!allowedFields.includes(query.orderBy)) {
+      throw new ApiError("Invalid order by", 400);
+    }
+    const sortObj: { [key: string]: SortOrder } = {
+      [query.orderBy]: query.order,
+    };
+    const [entities] = await Promise.all([
+      Student.find(filterObj).sort(sortObj),
+      Student.countDocuments(filterObj),
+    ]);
+    return { entities };
+  }
+  public async getStudentStatistics(
+    managerObjectId?: Types.ObjectId,
+  ): Promise<IStudentStatistics> {
+    const matchStage: FilterQuery<IStudent> = {};
+
+    if (managerObjectId) {
+      matchStage._managerId = managerObjectId;
+    }
+
+    const statistics = await Student.aggregate<StatusAggregationResult>([
+      { $match: matchStage },
       {
         $group: {
           _id: "$status",
@@ -67,6 +121,7 @@ class StudentRepository {
         },
       },
     ]);
+
     const stats: IStudentStatistics = {
       total: 0,
       [StudentStatusEnum.IN_WORK]: 0,
@@ -75,12 +130,14 @@ class StudentRepository {
       [StudentStatusEnum.DISAGGRE]: 0,
       [StudentStatusEnum.DUBBING]: 0,
     };
+
     for (const item of statistics) {
       stats.total += item.count;
 
       const status =
         StudentStatusEnum[item._id as keyof typeof StudentStatusEnum] ||
         item._id;
+
       if (status in stats) {
         stats[status as keyof IStudentStatistics] = item.count;
       }

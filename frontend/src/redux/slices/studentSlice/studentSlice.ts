@@ -4,9 +4,11 @@ import { studentService } from "@/services/student.service";
 import { StudentResponseType } from "@/models/StudentResponceType";
 import { OrderEnum } from "@/enums/oreder.enum";
 import { StudentListOrderEnum } from "@/enums/student-list-order.enum";
+import {StudentResponseWithoutPaginationType} from "@/models/StudentListResponseWithoutPaginationType";
 
 type StudentSliceType = {
     students: StudentResponseType;
+    studentsWithoutPagination: StudentResponseWithoutPaginationType;
     filter:Partial<IStudentListQuery>;
     student: IStudent | null;
     studentStatistics: IStudentStatistics | null;
@@ -22,6 +24,11 @@ const initialState: StudentSliceType = {
         order: OrderEnum.DESC,
         orderBy: StudentListOrderEnum.CREATED_AT,
     },
+    studentsWithoutPagination: {
+        data:[],
+        order: OrderEnum.DESC,
+        orderBy: StudentListOrderEnum.CREATED_AT,
+    },
     filter:{},
     student: null,
     studentStatistics: null,
@@ -31,6 +38,11 @@ const initialState: StudentSliceType = {
 
 type GetAllStudentsArgs = {
     page: number;
+    sortField: string;
+    sortOrder: string;
+    filters?: IStudentSearch;
+};
+type GetAllStudentsWithoutPaginationArgs = {
     sortField: string;
     sortOrder: string;
     filters?: IStudentSearch;
@@ -53,13 +65,26 @@ const getAllStudents = createAsyncThunk(
         }
     }
 );
+const getAllStudentsWithoutPagination = createAsyncThunk(
+    "studentSlice/getAllStudentsWithoutPagination",
+    async (args: GetAllStudentsWithoutPaginationArgs, thunkAPI) => {
+        try {
+            const { sortField, sortOrder, filters } = args;
+            const response = await studentService.getAllStudentsWithoutPagination(sortField, sortOrder, filters );
+            return thunkAPI.fulfillWithValue(response);
+        } catch (e) {
+            console.error("Error fetching students", e);
+            return thunkAPI.rejectWithValue((e as Error).message);
+        }
+    }
+);
 
 export const getStudentStatistics = createAsyncThunk(
     "studentSlice/getStudentStatistics",
     async (_, thunkAPI) => {
         try {
             const response = await studentService.getStudentStatistics();
-            return thunkAPI.fulfillWithValue(response.stats);
+            return thunkAPI.fulfillWithValue(response);
         } catch (e) {
             console.error("Error fetching statistics", e);
             return thunkAPI.rejectWithValue(e);
@@ -86,10 +111,6 @@ export const studentSlice = createSlice({
         setStudentFilter(state, action: PayloadAction<Partial<IStudentListQuery>>) {
             state.filter = action.payload;
         },
-        setSort(state, action: PayloadAction<{ orderBy: string; order: OrderEnum }>) {
-            state.students.orderBy = action.payload.orderBy;
-            state.students.order = action.payload.order;
-        },
         setPage(state, action: PayloadAction<number>) {
             state.students.page = action.payload;
         },
@@ -105,6 +126,18 @@ export const studentSlice = createSlice({
                 state.students = action.payload;
             })
             .addCase(getAllStudents.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(getAllStudentsWithoutPagination.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getAllStudentsWithoutPagination.fulfilled, (state, action: PayloadAction<StudentResponseWithoutPaginationType>) => {
+                state.loading = false;
+                state.studentsWithoutPagination = action.payload;
+            })
+            .addCase(getAllStudentsWithoutPagination.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })
@@ -142,6 +175,7 @@ export const studentSlice = createSlice({
 export const studentSliceActions = {
     ...studentSlice.actions,
     getAllStudents,
+    getAllStudentsWithoutPagination,
     getStudentStatistics,
     updateStudent
 };

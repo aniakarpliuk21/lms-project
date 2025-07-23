@@ -23,6 +23,11 @@ router.get(
   authMiddleware.checkAccessToken,
   studentController.getStudentList,
 );
+router.get(
+  "/all",
+  authMiddleware.checkAccessToken,
+  studentController.getAllStudentsWithoutPagination,
+);
 router.put(
   "/:studentId",
   commonMiddleware.isValid("studentId"),

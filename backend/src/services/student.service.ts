@@ -1,9 +1,12 @@
+import { Types } from "mongoose";
+
 import { StudentStatusEnum } from "../enums/student.enum";
 import { ApiError } from "../errors/api-error";
 import {
   IStudent,
   IStudentListQuery,
   IStudentListResponse,
+  IStudentListResponseWithoutPagination,
   IStudentStatistics,
   IStudentUpdateDto,
 } from "../interfaces/student.interface";
@@ -21,9 +24,28 @@ class StudentService {
     const { entities, total } = await studentRepository.getStudentList(query);
     return studentPresenter.toResponseList(entities, total, query);
   }
-  public async getStudentStatistics(): Promise<{ stats: IStudentStatistics }> {
-    const stats = await studentRepository.getStudentStatistics();
-    return { stats };
+  public async getAllStudentsWithoutPagination(
+    query: IStudentListQuery,
+  ): Promise<IStudentListResponseWithoutPagination> {
+    const { entities } =
+      await studentRepository.getStudentListWithoutPagination(query);
+    return studentPresenter.toResponseListWithoutPagination(entities, query);
+  }
+  public async getStudentStatistics(
+    managerId?: string,
+  ): Promise<IStudentStatistics> {
+    let managerObjectId: Types.ObjectId | undefined;
+
+    if (managerId) {
+      try {
+        managerObjectId = new Types.ObjectId(managerId);
+      } catch (e) {
+        console.error(e);
+        throw new ApiError("Invalid managerId", 400);
+      }
+    }
+
+    return await studentRepository.getStudentStatistics(managerObjectId);
   }
   // public async getStudentById(studentId: string): Promise<IStudent> {
   //   const student = await studentRepository.getStudentById(studentId);

@@ -15,8 +15,7 @@ const StudentFilterComponent = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const {groups, loading} = useAppSelector(state => state.groupStore);
-    const { register, watch, reset } = useForm<IStudentSearch>({ mode: "onChange" });
-    const students = useAppSelector((state) => state.studentStore.students.data);
+    const { register, watch, reset, getValues } = useForm<IStudentSearch>({ mode: "onChange" });
     const updateQueryParamsWithFilters = (filters: IStudentSearch) => {
         const params = new URLSearchParams();
         for (const [key, value] of Object.entries(filters)) {
@@ -68,7 +67,6 @@ const StudentFilterComponent = () => {
         dispatch(studentSliceActions.setStudentFilter({}));
         dispatch(studentSliceActions.setPage(1));
     };
-
     const handleCreateExcelTable = async (students: IStudent[]) => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Students");
@@ -99,7 +97,46 @@ const StudentFilterComponent = () => {
 
         saveAs(blob, "students.xlsx");
     };
+    const handleCreateExcel = async () => {
+        const values = getValues();
+        const manager = localStorage.getItem("manager");
+        let managerId: string | null = null;
 
+        if (manager) {
+            try {
+                const parsed = JSON.parse(manager);
+                managerId = parsed._id || null;
+            } catch (e) {
+                console.error(" Don't parse manager for localStorage:", e);
+            }
+        }
+
+        const filtered = Object.fromEntries(
+            Object.entries(values)
+                .filter(([, v]) => v !== "" && v !== undefined && v !== null)
+                .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])
+        );
+
+        if (filtered.managerOnly === true || filtered.managerOnly === "true") {
+            if (managerId) filtered.currentManagerId = managerId;
+        } else {
+            delete filtered.currentManagerId;
+        }
+        delete filtered.managerOnly;
+
+        const result = await dispatch(studentSliceActions.getAllStudentsWithoutPagination({
+            sortField: "createdAt",
+            sortOrder: "desc",
+            filters: filtered
+        }));
+
+        if (studentSliceActions.getAllStudentsWithoutPagination.fulfilled.match(result)) {
+            const students = result.payload.data;
+            await handleCreateExcelTable(students);
+        } else {
+            console.error("Unable to get students for export.");
+        }
+    };
     return (
         <form>
             <div className="flex m-2">
@@ -217,7 +254,7 @@ const StudentFilterComponent = () => {
                     </button>
                     <button
                         type="button"
-                        onClick={() => handleCreateExcelTable(students)}
+                        onClick={handleCreateExcel}
                         className="bg-lime-600 m-1 w-8 h-8">
                         <Image src="/images/image7.png" alt="prev" width={10} height={10} className="w-6 h-6"/>
                     </button>

@@ -81,7 +81,7 @@ const ManagerPage = () => {
     return (
         <div className="flex flex-col">
             <MenuComponent />
-            <div className="flex-grow px-4 py-3">
+            <div className="flex-grow px-4 py-3 pb-28">
                 <StudentFilterComponent />
                 <StudentListComponent
                     onSortChange={onSortChange}

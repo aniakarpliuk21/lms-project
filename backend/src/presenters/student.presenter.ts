@@ -2,6 +2,7 @@ import {
   IStudent,
   IStudentListQuery,
   IStudentListResponse,
+  IStudentListResponseWithoutPagination,
 } from "../interfaces/student.interface";
 
 class StudentPresenter {
@@ -33,6 +34,15 @@ class StudentPresenter {
   ): IStudentListResponse {
     return {
       total,
+      data: entities.map(this.toResponse),
+      ...query,
+    };
+  }
+  public toResponseListWithoutPagination(
+    entities: IStudent[],
+    query: IStudentListQuery,
+  ): IStudentListResponseWithoutPagination {
+    return {
       data: entities.map(this.toResponse),
       ...query,
     };

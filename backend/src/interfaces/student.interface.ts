@@ -70,6 +70,10 @@ export interface IStudentListResponse extends IStudentListQuery {
   data: IStudent[];
   total: number;
 }
+export interface IStudentListResponseWithoutPagination
+  extends IStudentListQuery {
+  data: IStudent[];
+}
 
 export interface IStudentStatistics {
   total: number;

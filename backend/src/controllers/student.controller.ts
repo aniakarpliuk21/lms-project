@@ -28,7 +28,20 @@ class StudentController {
       const result = await studentService.getStudentList(query);
       res.json(result);
     } catch (e) {
-      console.error("🔥 GET STUDENT LIST ERROR:", e);
+      next(e);
+    }
+  }
+  public async getAllStudentsWithoutPagination(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const query = req.query as unknown as IStudentListQuery;
+      const result =
+        await studentService.getAllStudentsWithoutPagination(query);
+      res.json(result);
+    } catch (e) {
       next(e);
     }
   }
@@ -38,7 +51,8 @@ class StudentController {
     next: NextFunction,
   ) {
     try {
-      const result = await studentService.getStudentStatistics();
+      const managerId = req.query.managerId as string | undefined;
+      const result = await studentService.getStudentStatistics(managerId);
       res.json(result);
     } catch (e) {
       next(e);

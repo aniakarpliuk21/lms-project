@@ -59,9 +59,6 @@ export interface IStudentStatistics {
     'Disaggre': number;
     'Dubbing': number;
 }
-export interface IStudentStatisticsResponse {
-    stats: IStudentStatistics;
-}
 
 export type IStudentListQuery = {
     page: number;
