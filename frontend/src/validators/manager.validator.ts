@@ -22,19 +22,12 @@ const email = Joi.string()
             "string.pattern.base": "Email does not match the required pattern",
             "string.required": "Email is a required field",
         });
-const password = Joi.string()
-    .min(5)
-    .pattern(/^.{5,}$/)
-        .messages({
-            "string.base": "Password must be a string",
-            "string.empty": "Password cannot be empty",
-            "string.pattern.base": "Password does not match the required pattern",
-            "string.required": "Password is a required field",
-        });
 export const managerValidator = {
     login: Joi.object({
         email: email.required(),
-        password: password.required(),
+        password: Joi.string().required().messages({
+            "string.empty": "Password is required",
+        }),
     }),
     createManager: Joi.object({
         name: name.required(),

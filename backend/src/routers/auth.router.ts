@@ -64,12 +64,6 @@ router.put(
   authMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
   authController.forgotPasswordSet,
 );
-// router.put(
-//   "/password",
-//   commonMiddleware.validateBody(ManagerValidator.changePassword),
-//   authMiddleware.checkAccessToken,
-//   authController.changePassword,
-// );
 router.post(
   "/verify",
   commonMiddleware.validateBody(AuthValidator.verify),
@@ -84,21 +78,17 @@ router.post(
   authController.sendActivateEmail,
 );
 router.post(
-  "/banManager",
+  "/banManager/:managerId",
+  commonMiddleware.isValid("managerId"),
   authMiddleware.checkAccessToken,
   commonMiddleware.isAdmin,
   authController.banManager,
 );
 router.post(
-  "/unbanManager",
+  "/unbanManager/:managerId",
+  commonMiddleware.isValid("managerId"),
   authMiddleware.checkAccessToken,
   commonMiddleware.isAdmin,
   authController.unbanManager,
 );
-// router.get(
-//   "/manager/:managerId",
-//   authMiddleware.checkAccessToken,
-//   commonMiddleware.isValid("managerId"),
-//   authController.getManagerById,
-// );
 export const authRouter = router;

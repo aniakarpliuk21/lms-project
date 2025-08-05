@@ -15,9 +15,6 @@ import { studentPresenter } from "../presenters/student.presenter";
 import { studentRepository } from "../repositories/student.repository";
 
 class StudentService {
-  // public async createStudent(dto: IStudentCreateDto): Promise<IStudent> {
-  //   return await studentRepository.createStudent(dto);
-  // }
   public async getStudentList(
     query: IStudentListQuery,
   ): Promise<IStudentListResponse> {
@@ -47,13 +44,6 @@ class StudentService {
 
     return await studentRepository.getStudentStatistics(managerObjectId);
   }
-  // public async getStudentById(studentId: string): Promise<IStudent> {
-  //   const student = await studentRepository.getStudentById(studentId);
-  //   if (!student) {
-  //     throw new ApiError("Student not found", 404);
-  //   }
-  //   return student;
-  // }
   public async updateStudent(
     tokenPayload: ITokenPayload,
     dto: IStudentUpdateDto,
@@ -77,12 +67,5 @@ class StudentService {
     }
     throw new ApiError("You do not have permission to edit this student", 403);
   }
-  // public async deleteStudent(studentId: string): Promise<void> {
-  //   const student = await studentRepository.getStudentById(studentId);
-  //   if (!student) {
-  //     throw new ApiError("Student not found", 404);
-  //   }
-  //   await studentRepository.delete(studentId);
-  // }
 }
 export const studentService = new StudentService();

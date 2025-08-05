@@ -4,6 +4,7 @@ import {ITokenPair} from "@/models/IToken";
 
 const authService = {
         authentication: async (authData: IManagerLogin): Promise<boolean> => {
+            try {
                 const response = await fetch(urlBuilder.loginUrl(), {
                     method: 'POST',
                     headers: {
@@ -11,10 +12,23 @@ const authService = {
                     },
                     body: JSON.stringify(authData),
                 });
+
+                if (!response.ok) {
+                    if ([401, 403, 404].includes(response.status)) {
+                        return false;
+                    }
+                    throw new Error("Server error");
+                }
+
                 const data = await response.json();
                 localStorage.setItem('manager', JSON.stringify(data.responseManager));
                 localStorage.setItem('tokenPair', JSON.stringify(data.tokens));
-                return !!(data?.tokens?.accessToken && data?.tokens?.refreshToken);
+
+                return true;
+            } catch (error) {
+                console.error("Login error:", error);
+                throw error;
+            }
         },
 
         refresh: async () => {
@@ -27,8 +41,8 @@ const authService = {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${refreshToken}`,
                     },
-                    body: JSON.stringify({ refreshToken }),
                 });
                 const data = await response.json();
                 localStorage.setItem('tokenPair', JSON.stringify(data));

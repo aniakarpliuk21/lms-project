@@ -13,11 +13,5 @@ router.post(
   groupController.createGroup,
 );
 router.get("/", authMiddleware.checkAccessToken, groupController.getAllGroup);
-// router.put(
-//   "/:groupId",
-//   commonMiddleware.isValid("groupId"),
-//   authMiddleware.checkAccessToken,
-//   groupController.updateGroupById,
-// );
 
 export const groupRouter = router;

@@ -10,12 +10,43 @@ import {studentSliceActions} from "@/redux/slices/studentSlice/studentSlice";
 import {useRouter} from "next/navigation";
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import {useAppSearchParams} from "@/hooks/useAppSearchParams";
 
 const StudentFilterComponent = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
+    const { getParam } = useAppSearchParams();
     const {groups, loading} = useAppSelector(state => state.groupStore);
     const { register, watch, reset, getValues } = useForm<IStudentSearch>({ mode: "onChange" });
+    useEffect(() => {
+        const fields: (keyof IStudentSearch)[] = [
+            "name", "surname", "email", "phone", "age",
+            "course", "course_format", "course_type",
+            "group", "status", "startDate", "endDate", "managerOnly"
+        ];
+
+        const query: Partial<IStudentSearch> = {};
+
+        fields.forEach((key) => {
+            const value = getParam(key);
+            if (value !== null) {
+                if (key === "managerOnly") {
+                    query[key] = value === "true";
+                } else if (key === "age") {
+                    query[key] = Number(value);
+                } else {
+                    query[key] = decodeURIComponent(value);
+                }
+            }
+        });
+
+
+        reset(query);
+        setTimeout(() => {
+            debouncedFilter(query as IStudentSearch);
+        }, 0);
+    }, []);
+
     const prepareFilteredObject = (values: IStudentSearch): Partial<IStudentListQuery> => {
         const manager = localStorage.getItem("manager");
         let managerId: string | null = null;
@@ -32,7 +63,12 @@ const StudentFilterComponent = () => {
         const filtered = Object.fromEntries(
             Object.entries(values)
                 .filter(([, v]) => v !== "" && v !== undefined && v !== null)
-                .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])
+                .map(([k, v]) => {
+                    if ((k === "startDate" || k === "endDate") && v instanceof Date && !isNaN(v.getTime())) {
+                        return [k, v.toISOString()];
+                    }
+                    return [k, typeof v === "string" ? v.trim() : v];
+                })
         );
 
         if (filtered.managerOnly === true || filtered.managerOnly === "true") {

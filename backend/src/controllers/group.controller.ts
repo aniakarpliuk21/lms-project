@@ -20,19 +20,5 @@ class GroupController {
       next(e);
     }
   }
-  // public async updateGroupById(
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction,
-  // ) {
-  //   try {
-  //     const groupId = req.params.groupId;
-  //     const { studentId } = req.body;
-  //     const response = await groupService.updateGroupById(groupId, studentId);
-  //     res.status(201).json(response);
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
 }
 export const groupController = new GroupController();

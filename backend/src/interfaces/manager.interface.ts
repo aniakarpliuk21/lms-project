@@ -47,10 +47,6 @@ export type IManagerLoginDto = Pick<IManager, "email" | "password">;
 
 export type IForgotPassword = Pick<IManager, "email">;
 export type IForgotPasswordSet = Pick<IManager, "password"> & { token: string };
-// export type IChangePassword = {
-//   oldPassword: string;
-//   newPassword: string;
-// };
 
 export type IManagerListQuery = {
   page: number;

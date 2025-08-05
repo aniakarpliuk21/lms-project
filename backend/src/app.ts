@@ -1,7 +1,9 @@
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
+import swaggerUi from "swagger-ui-express";
 
+import swaggerDocument from "../docs/swagger.json";
 import { configure } from "./configs/configure";
 // import { createAdmin } from "./configs/create-admin";
 // import { importStudents } from "./configs/import-students";
@@ -16,8 +18,17 @@ import { studentRouter } from "./routers/student.router";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue: false,
+    optionsSuccessStatus: 200,
+  }),
+);
 
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/students", studentRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/comments", commentRouter);

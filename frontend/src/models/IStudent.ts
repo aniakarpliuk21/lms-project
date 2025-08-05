@@ -46,8 +46,8 @@ export interface IStudentSearch {
     course_type?: string;
     status?: string;
     group?: string;
-    startDate?: Date;
-    endDate?: Date;
+    startDate?: string;
+    endDate?: string;
     managerOnly?: boolean;
 }
 
@@ -74,4 +74,8 @@ export type IStudentListQuery = {
     orderBy?: string;
     managerOnly?: boolean;
     currentManagerId?: string;
+    startDate?: string;
+    endDate?: string;
 };
+
+

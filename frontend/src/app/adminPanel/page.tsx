@@ -57,8 +57,10 @@ const AdminPage = () => {
                     onManagerCreated={handleManagerCreated}
                 />
                 <ManagerListComponent/>
-                <ManagerPaginationComponent totalManager={total} limit={limit}/>
+                <div className="fixed bottom-0 left-0 w-full bg-white shadow z-50 py-2">
+                    <ManagerPaginationComponent totalManagers={total} limit={limit}/>
+                </div>
+                </div>
             </div>
-        </div>
-    );
-};
+            );
+            };

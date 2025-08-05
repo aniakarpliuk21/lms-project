@@ -161,16 +161,6 @@ class AuthController {
       next(e);
     }
   }
-  // public async changePassword(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
-  //     const dto = req.body as IChangePassword;
-  //     await authService.changePassword(dto, tokenPayload);
-  //     res.sendStatus(204);
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
   public async sendActivateEmail(
     req: Request,
     res: Response,
@@ -187,7 +177,7 @@ class AuthController {
   public async banManager(req: Request, res: Response, next: NextFunction) {
     try {
       const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
-      const { managerId } = req.body;
+      const managerId = req.params.managerId;
       await managerService.banManager(tokenPayload, managerId);
       res.sendStatus(204);
     } catch (e) {
@@ -196,22 +186,13 @@ class AuthController {
   }
   public async unbanManager(req: Request, res: Response, next: NextFunction) {
     try {
-      const { managerId } = req.body;
+      const managerId = req.params.managerId;
       await managerService.unbanManager(managerId);
       res.sendStatus(204);
     } catch (e) {
       next(e);
     }
   }
-  // public async getManagerById(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const managerId = req.params.managerId;
-  //     const result = await managerService.getManagerById(managerId);
-  //     res.status(200).json(result);
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
 }
 
 export const authController = new AuthController();

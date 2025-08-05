@@ -18,16 +18,14 @@ const [isAuthState, setIsAuthState] = useState<boolean>(false);
     const customHandler = async (formData: IManagerLogin) => {
         try {
             const isAuth =await authService.authentication(formData);
-
             setIsAuthState( isAuth );
-            if (isAuth) {
-                    router.push("/manager");
+            if (!isAuth) {
+                setErrorMessage("Невірний імейл або пароль");
             } else {
-                setErrorMessage("Login failed. Please check your credentials.");
+                router.push("/manager");
             }
-        } catch (error) {
-            console.error("Login error:", error);
-            setErrorMessage("An error occurred while logging in.");
+        } catch (e) {
+            setErrorMessage("Помилка з’єднання з сервером");
         }
     };
     return (
@@ -41,7 +39,10 @@ const [isAuthState, setIsAuthState] = useState<boolean>(false);
                             <input
                                 type="email"
                                 id="email"
-                                placeholder={"Enter your email"} {...register("email")}
+                                placeholder={"Enter your email"}
+                                {...register("email", {
+                                onChange: () => setErrorMessage(null),
+                            })}
                                 className="mt-1 w-full bg-gray-200 rounded-md border border-gray-200 p-2 focus:border-lime-600 focus:outline-none"
                             />
                     </div>
@@ -52,7 +53,10 @@ const [isAuthState, setIsAuthState] = useState<boolean>(false);
                         <input
                             type="password"
                             id="password"
-                            placeholder={"Enter your password"} {...register("password")}
+                            placeholder={"Enter your password"}
+                            {...register("password", {
+                            onChange: () => setErrorMessage(null),
+                        })}
                             className="mt-1 w-full bg-gray-200 rounded-md border border-gray-200 p-2 focus:border-lime-600 focus:outline-none"
                         />
                     </div>

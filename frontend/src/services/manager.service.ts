@@ -71,25 +71,23 @@ const managerService = {
         return response.status === 204;
     },
     banManager: async (managerId:string): Promise<boolean> => {
-        const url = urlBuilder.banManagerUrl();
+        const url = urlBuilder.banManagerUrl()+ `/${managerId}`;
         const options: RequestInit = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({managerId})
+            }
         }
         const response = await myInterceptors(url, options);
         return response.status === 204;
     },
     unbanManager: async (managerId:string): Promise<boolean> => {
-        const url = urlBuilder.unbanManagerUrl();
+        const url = urlBuilder.unbanManagerUrl()+ `/${managerId}`;
         const options: RequestInit = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({managerId})
+            }
         }
         const response = await myInterceptors(url, options);
         return response.status === 204;

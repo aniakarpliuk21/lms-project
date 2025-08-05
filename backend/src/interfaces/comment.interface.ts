@@ -5,5 +5,3 @@ export interface IComment {
   studentId: string;
   createdAt: Date;
 }
-
-// export type ICommentCreateDto = Pick<IComment, "commentBody" | "studentId">;

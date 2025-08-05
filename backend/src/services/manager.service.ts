@@ -19,10 +19,6 @@ export class ManagerService {
     }
     return managerPresenter.toResponse(manager);
   }
-  // public async getManagerById(managerId: string): Promise<IManagerToResponse> {
-  //   const manager = await managerRepository.getManagerById(managerId);
-  //   return managerPresenter.toResponse(manager);
-  // }
   public async getManagerList(
     query: IManagerListQuery,
   ): Promise<IManagerListResponse> {
@@ -41,11 +37,11 @@ export class ManagerService {
       tokenPayload.managerId,
     );
     if (!currentManager) {
-      throw new Error("Manager not found.");
+      throw new ApiError("Manager not found", 404);
     }
     const currentManagerId = currentManager._id.toString();
     if (managerId === currentManagerId) {
-      throw new Error("You cannot ban yourself.");
+      throw new ApiError("You cannot ban yourself.", 404);
     }
     await managerRepository.updateManager(managerId, {
       isBanned: true,

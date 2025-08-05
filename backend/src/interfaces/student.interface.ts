@@ -28,21 +28,6 @@ export interface IStudent {
   createdAt: Date;
   updatedAt: Date;
 }
-
-// export type IStudentCreateDto = Pick<
-//   IStudent,
-//   | "name"
-//   | "surname"
-//   | "email"
-//   | "phone"
-//   | "age"
-//   | "course"
-//   | "course_format"
-//   | "course_type"
-//   | "status"
-//   | "sum"
-//   | "alreadyPaid"
-// >;
 export type IStudentUpdateDto = Partial<IStudent>;
 
 export type IStudentListQuery = {

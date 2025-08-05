@@ -80,79 +80,76 @@ const ManagerComponent:FC<IProps> = ({manager}) => {
     const isSelf = loggedManager?._id === manager._id;
     return (
         <div className="border border-lime-700 rounded-md p-4 mb-4">
-            <div className="flex flex-wrap gap-6 items-start">
-                <div className="min-w-[200px]">
-                    <div className="text-sm mb-1">id: {manager.id}</div>
-                    <div className="text-sm mb-1">email: {manager.email}</div>
-                    <div className="text-sm mb-1">name: {manager.name}</div>
-                    <div className="text-sm mb-1">surname: {manager.surname}</div>
-                    <div className="text-sm mb-1">
-                        is_active: {manager.isVerified !== undefined ? String(manager.isVerified) : 'undefined'}
-                    </div>
-                    <div className="text-sm mb-1">
+            <div className="flex gap-10 items-start">
+                <div className="text-sm space-y-1 min-w-[400px] font-semibold">
+                    <div>id: {manager.id}</div>
+                    <div>email: {manager.email}</div>
+                    <div>name: {manager.name}</div>
+                    <div>surname: {manager.surname}</div>
+                    <div>is_active: {String(manager.isVerified)}</div>
+                    <div>
                         last
                         login: {manager.lastVisit ? new Date(manager.lastVisit).toLocaleDateString('uk-UA') : 'null'}
                     </div>
                 </div>
                 {stats && (
-                    <div className="min-w-[200px] text-sm text-lime-800">
+                    <div className="text-sm text-lime-800 space-y-1 w-[30%]">
                         <div><strong>Total:</strong> {stats.total}</div>
                         {stats["New"] > 0 && <div><strong>New:</strong> {stats["New"]}</div>}
                         {stats["In work"] > 0 && <div><strong>In work:</strong> {stats["In work"]}</div>}
-                        {stats["Aggre"] > 0 && <div><strong>Aggre:</strong> {stats["Aggre"]}</div>}
-                        {stats["Disaggre"] > 0 && <div><strong>Disaggre:</strong> {stats["Disaggre"]}</div>}
+                        {stats["Aggre"] > 0 && <div><strong>Agree:</strong> {stats["Aggre"]}</div>}
+                        {stats["Disaggre"] > 0 && <div><strong>Disagree:</strong> {stats["Disaggre"]}</div>}
                         {stats["Dubbing"] > 0 && <div><strong>Dubbing:</strong> {stats["Dubbing"]}</div>}
                     </div>
                 )}
-                <div className="flex-1 flex items-center">
-                    <div className="flex flex-wrap gap-2">
-                        {manager.isVerified && (
+                <div className="w-[70%] flex gap-2 flex-wrap">
+                    {manager.isVerified && (
+                        <button
+                            onClick={handleRecoveryPassword}
+                            disabled={forgotPassword}
+                            className="bg-lime-600 hover:bg-green-700 text-white px-3 py-1 text-sm rounded"
+                        >
+                            RECOVERY PASSWORD
+                        </button>
+                    )}
+                    {!manager.isVerified && (
+                        <button
+                            onClick={handleSendActivateEmail}
+                            className="bg-lime-600 hover:bg-green-700 text-white px-3 py-1 text-sm rounded"
+                        >
+                            ACTIVATE
+                        </button>
+                    )}
+                    {!isSelf && (
+                        <>
                             <button
-                                onClick={handleRecoveryPassword}
-                                disabled={forgotPassword}
-                                className="bg-lime-600 hover:bg-green-700 text-white px-3 py-1 text-sm rounded"
+                                onClick={handleBanManager}
+                                disabled={banManager}
+                                className={`px-3 py-1 text-sm rounded text-white ${
+                                    banManager ? 'bg-gray-400 cursor-not-allowed' : 'bg-lime-600 hover:bg-lime-700'
+                                }`}
                             >
-                                RECOVERY PASSWORD
+                                BAN
                             </button>
-                        )}
-                        {!manager.isVerified && (
                             <button
-                                onClick={handleSendActivateEmail}
-                                className="bg-lime-600 hover:bg-green-700 text-white px-3 py-1 text-sm rounded"
+                                onClick={handleUnbanManager}
+                                disabled={!banManager || unbanManager}
+                                className={`px-3 py-1 text-sm rounded text-white ${
+                                    !banManager ? 'bg-gray-400 cursor-not-allowed' : 'bg-lime-600 hover:bg-lime-700'
+                                }`}
                             >
-                                ACTIVATE
+                                UNBAN
                             </button>
-                        )}
-                        {!isSelf && (
-                            <>
-                                <button
-                                    onClick={handleBanManager}
-                                    disabled={banManager}
-                                    className={`px-3 py-1 text-sm rounded text-white ${
-                                        banManager ? 'bg-gray-400 cursor-not-allowed' : 'bg-lime-600 hover:bg-lime-700'
-                                    }`}
-                                >
-                                    BAN
-                                </button>
-                                <button
-                                    onClick={handleUnbanManager}
-                                    disabled={!banManager || unbanManager}
-                                    className={`px-3 py-1 text-sm rounded text-white ${
-                                        !banManager ? 'bg-gray-400 cursor-not-allowed' : 'bg-lime-600 hover:bg-lime-700'
-                                    }`}
-                                >
-                                    UNBAN
-                                </button>
-                            </>
-                        )}
-                        {isEmailSent && (
-                            <p className="text-green-600 font-semibold w-full">Email has been sent successfully!</p>
-                        )}
-                    </div>
+                        </>
+                    )}
+                    {isEmailSent && (
+                        <p className="text-green-600 font-semibold">Email has been sent successfully!</p>
+                    )}
                 </div>
             </div>
         </div>
     );
+
 };
 
 export default ManagerComponent;

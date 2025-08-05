@@ -51,9 +51,6 @@ class StudentRepository {
       [query.orderBy]: query.order,
     };
   }
-  // public async createStudent(dto: IStudentCreateDto): Promise<IStudent> {
-  //   return await Student.create(dto);
-  // }
   public async getStudentList(
     query: IStudentListQuery,
   ): Promise<{ entities: IStudent[]; total: number }> {
@@ -128,9 +125,5 @@ class StudentRepository {
   ): Promise<IStudent> {
     return await Student.findByIdAndUpdate(studentId, dto, { new: true });
   }
-
-  // public async delete(studentId: string): Promise<void> {
-  //   await Student.deleteOne({ id: studentId });
-  // }
 }
 export const studentRepository = new StudentRepository();
