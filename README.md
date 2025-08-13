@@ -83,7 +83,7 @@ http://localhost/api/docs
 
 Postman Collection: 
 
-https://drive.google.com/file/d/1lAEaTWe8vl51sfYjISAVdwv3fi1eq-Q5/view?usp=sharing
+https://drive.google.com/file/d/1OUBjijqniCA5KPjAJt1fyh42zrPn6g7t/view?usp=sharing
 
 ...
 
