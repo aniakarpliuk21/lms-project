@@ -10,9 +10,7 @@ import { useRouter } from 'next/navigation';
 
 const LoginComponent = () => {
     const router = useRouter();
-const {handleSubmit, register, formState:{isValid}} = useForm<IManagerLogin>(
-    {mode:"all",
-        resolver:joiResolver(managerValidator.login)});
+const {handleSubmit, register, formState:{isValid}} = useForm<IManagerLogin>({ mode: "all" });
 const [isAuthState, setIsAuthState] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const customHandler = async (formData: IManagerLogin) => {
@@ -25,7 +23,7 @@ const [isAuthState, setIsAuthState] = useState<boolean>(false);
                 router.push("/manager");
             }
         } catch (e) {
-            setErrorMessage("Помилка з’єднання з сервером");
+            setErrorMessage(`Помилка з’єднання з сервером: ${e}`);
         }
     };
     return (
@@ -69,7 +67,6 @@ const [isAuthState, setIsAuthState] = useState<boolean>(false);
 
                     <button
                                 className="w-full rounded-md bg-lime-600 p-2 text-white transition hover:bg-lime-600"
-                                disabled={!isValid}
                             >Login</button>
 
                 </form>

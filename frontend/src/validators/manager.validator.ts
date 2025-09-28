@@ -23,12 +23,6 @@ const email = Joi.string()
             "string.required": "Email is a required field",
         });
 export const managerValidator = {
-    login: Joi.object({
-        email: email.required(),
-        password: Joi.string().required().messages({
-            "string.empty": "Password is required",
-        }),
-    }),
     createManager: Joi.object({
         name: name.required(),
         surname: surname.required(),
