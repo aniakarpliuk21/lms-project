@@ -1,8 +1,6 @@
 "use client";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {joiResolver} from "@hookform/resolvers/joi";
-import {managerValidator} from "@/validators/manager.validator";
 import {authService} from "@/services/auth.service";
 import {IManagerLogin} from "@/models/IManager";
 import { useRouter } from 'next/navigation';
@@ -10,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 const LoginComponent = () => {
     const router = useRouter();
-const {handleSubmit, register, formState:{isValid}} = useForm<IManagerLogin>({ mode: "all" });
+const {handleSubmit, register} = useForm<IManagerLogin>({ mode: "all" });
 const [isAuthState, setIsAuthState] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const customHandler = async (formData: IManagerLogin) => {
